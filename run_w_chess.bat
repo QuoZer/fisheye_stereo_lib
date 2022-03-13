@@ -1,0 +1,1 @@
+.\dewrapper.exe -w=9 -h=6 -pt=chessboard ..\..\datasets\cropped_chess\cropped_list.xml
