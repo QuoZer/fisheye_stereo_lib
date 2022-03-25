@@ -196,19 +196,27 @@ int main(int argc, char** argv)
     bool recalcFlag = true;
 
     Size origSize(1080, 1080);       //imread(image_list[0], -1).size();
-    Size newSize(540, 540);        // origSize * 1;            // determines the size of the output image
+    Size newSize(1080, 1080);        // origSize * 1;            // determines the size of the output image
     
 // Create the stereo system object
     SurroundSystem SS; 
-// Create the first camera object and fill its params
-    ScaramuzzaModel SM1; // = SS.getCameraModel(SurroundSystem::CameraModels::SCARAMUZZA);
-    SM1.setIntrinsics({ 350.8434, -0.0015, 2.1981 * pow(10, -6), -3.154 * pow(10, -9) }, cv::Vec2d(0, 0), cv::Matx22d(1, 0, 0, 1), 0.022);
+//// Create the first camera object and fill its params
+//    ScaramuzzaModel SM1; // = SS.getCameraModel(SurroundSystem::CameraModels::SCARAMUZZA);
+//    SM1.setIntrinsics({ 350.8434, -0.0015, 2.1981 * pow(10, -6), -3.154 * pow(10, -9) }, cv::Vec2d(0, 0), cv::Matx22d(1, 0, 0, 1), 0.022);
+//    SM1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0, 1));
+//    SM1.setCamParams(origSize);
+//// Create the second camera object and fill its params
+//    ScaramuzzaModel SM2;
+//    SM2.setIntrinsics({ 350.8434, -0.0015, 2.1981 * pow(10, -6), -3.154 * pow(10, -9) }, cv::Vec2d(0, 0), cv::Matx22d(1, 0, 0, 1), 0.022);
+//    SM2.setExtrinsics(cv::Vec3d(1.0, 0, 0), cv::Vec4d(0, 0, 0.7071068, 0.7071068)); // 90^o
+//    SM2.setCamParams(origSize);
+    KBModel SM1;
+    SM1.setIntrinsics(KBParams({ 3.77322, -0.00060, 0.01464, 0.00000 }, cv::Vec2d(0, 0), cv::Matx22d(1, 0, 0, 1))); // 0.14428, 3.77322, -0.00060, 0.01464
     SM1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0, 1));
     SM1.setCamParams(origSize);
-// Create the second camera object and fill its params
-    ScaramuzzaModel SM2;
-    SM2.setIntrinsics({ 350.8434, -0.0015, 2.1981 * pow(10, -6), -3.154 * pow(10, -9) }, cv::Vec2d(0, 0), cv::Matx22d(1, 0, 0, 1), 0.022);
-    SM2.setExtrinsics(cv::Vec3d(1.0, 0, 0), cv::Vec4d(0, 0, 0.7071068, 0.7071068)); // 90^o
+    KBModel SM2;
+    SM2.setIntrinsics(KBParams( { 3.77322, -0.00060, 0.01464, 0.00000 }, cv::Vec2d(0, 0), cv::Matx22d(1, 0, 0, 1))); // 3.77322, -0.00060, 0.01464 0.00000
+    SM2.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0, 1));
     SM2.setCamParams(origSize);
 // Add these cams to the stereosystem
     SS.addNewCam(SM1);

@@ -23,7 +23,7 @@ public:
 		ATAN,
 		SCARAMUZZA,
 		MEI,
-		KB
+		KBModel
 	};
 
 	enum ImageType
