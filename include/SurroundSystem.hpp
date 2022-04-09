@@ -53,6 +53,7 @@ public:
 
 	void prepareLUTs();
 
+	int getNumOfSP();
 	void getImage(int stereopairIndex, ImageType IT, cv::Mat& l, cv::Mat& r, cv::Mat& dst);
 
 };

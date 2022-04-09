@@ -52,6 +52,10 @@ int SurroundSystem::createStereopair(int lCamIndex, int rCamIndex, cv::Size reco
 	return stereopairs.size() - 1;
 }
 
+int SurroundSystem::getNumOfSP()
+{
+	return stereopairs.size();
+}
 
 void SurroundSystem::prepareLUTs()
 {

@@ -27,7 +27,8 @@ public:	///* Projection functions *///
 	cv::Mat projectPixelToWorld(cv::Point pixel);
 
 public:
-	void setIntrinsics(ScaraParams sp);
+	void setIntrinsics(std::initializer_list<double> coeffs, double lambda,
+		cv::Vec2d centerOffset, cv::Matx22d stretchMatrix);
 };
 
 class AtanModel : public CameraModel
@@ -39,6 +40,7 @@ private:	///* Intrinsics *///
 
 public:	///* Projection functions *///
 	cv::Point2d projectWorldToPixel(cv::Mat worldPoint);
+	cv::Point2d projectWorldToPixel2(cv::Mat worldPoint);
 	cv::Mat projectPixelToWorld(cv::Point pixel) { return cv::Mat(oldSize, CV_8UC3, cv::Scalar(0, 0, 0)); }
 	
 public:
@@ -49,13 +51,17 @@ public:
 class KBModel : public CameraModel
 {
 private:
-	double k2, k3, k4, k5;
+	cv::Vec2d centerOffset;				// Distortion center
+	cv::Matx22d stretchMatrix;			// Stretch matrix
+	std::vector <double> kb_polynom;
 
 public:
 	KBModel();
-	KBModel(KBParams mp);
+	KBModel(std::initializer_list<double> coeffs,
+		cv::Vec2d centerOffset, cv::Matx22d stretchMatrix);
 
-	void setIntrinsics(KBParams mp);
+	void setIntrinsics(std::initializer_list<double> coeffs,
+		cv::Vec2d centerOffset, cv::Matx22d stretchMatrix);
 
 	cv::Point2d projectWorldToPixel(cv::Mat worldPoint);
 	cv::Mat projectPixelToWorld(cv::Point pixel);
@@ -66,10 +72,17 @@ public:
 class MeiModel : public CameraModel
 {
 private:
-	double eps;
+	double xi;
+	double p1, p2;
+	double k1, k2;
 	std::vector<double> mei_polynom;
 
+public:
+	MeiModel();
+	MeiModel(double xi, double p1, double p2, double k1, double k2, cv::Vec2d centerOffset, cv::Matx22d stretchMatrix);
+	void setIntrinsics(double xi, double p1, double p2, double k1, double k2, cv::Vec2d centerOffset, cv::Matx22d stretchMatrix);
 	cv::Point2d projectWorldToPixel(cv::Mat worldPoint);
+	cv::Mat MeiModel::projectPixelToWorld(cv::Point pixel);
 
 
 };

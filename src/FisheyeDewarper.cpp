@@ -1,4 +1,5 @@
 #include "FisheyeDewarper.hpp"
+#include <CvPlot/cvplot.h>
 
 FisheyeDewarper::FisheyeDewarper()
 {
@@ -30,6 +31,13 @@ void FisheyeDewarper::createMaps()
     map2 = cv::Mat(oldSize, CV_32FC1, float(0));
 }
 
+void FisheyeDewarper::setRpy(cv::Vec3d angles)
+{
+    this->yaw = angles[0] * PI / 180;
+    this->pitch = -angles[1] * PI / 180;
+    this->roll = angles[2] * PI / 180;
+}
+
 void FisheyeDewarper::setRpy(float yaw, float pitch, float roll)
 {
     this->yaw = yaw * PI / 180;
@@ -37,6 +45,13 @@ void FisheyeDewarper::setRpy(float yaw, float pitch, float roll)
     this->roll = roll * PI / 180;
 
     // TODO: fillMaps() after angle update. Or should it be handled manually? 
+}
+
+void FisheyeDewarper::setRpyRad(cv::Vec3d rad_angles)
+{
+    this->yaw =   rad_angles[0];
+    this->pitch = rad_angles[1];
+    this->roll =  rad_angles[2];
 }
 
 void FisheyeDewarper::setSize(cv::Size oldsize, cv::Size newsize, float wideFov)

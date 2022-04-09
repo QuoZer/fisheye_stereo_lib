@@ -7,14 +7,28 @@
 #include <iostream>
 #include <string>
 #include <time.h>
+#include <map>
 #include <cstdarg>
 #include "SurroundSystem.hpp"
 
+// args: -w=9 -h=6 -pt=chessboard ..\..\data\stereo_img\two_dome_images\stereo_list.xml
 
 const bool DETECT_CHESS = false;
 const bool PUT_CIRCLES = false;
 const bool FAST_METHOD = true;
 const double PI = M_PI;
+
+enum CAM_MODEL
+{
+    SCARA,
+    MEI,
+    KB,
+    ATAN
+};
+#define MEI
+#define SCARA
+#define KB
+#define ATAN
 
 int px_counter = 0;
 
@@ -145,6 +159,28 @@ void ShowManyImages(string title, int nArgs, ...) {
     va_end(args);
 }
 
+map<int, string> types = { {0, "MEI"}, {1, "SCARA"}, {2, "KB"}, {3, "ATAN"} };
+
+void saveAllImages(SurroundSystem& SS, cv::Mat& left, cv::Mat& right, int index )
+{
+    Size newSize(1080, 1080);
+    Mat combinedRemap(Size(newSize.width * 2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
+    for (int i = 0; i < SS.getNumOfSP(); i++)
+    {
+        SS.getImage(i, SurroundSystem::RECTIFIED, left, right, combinedRemap);
+        Mat left_rem = combinedRemap(Rect(0, 0, 1080, 1080)).clone();
+        Mat right_rem = combinedRemap(Rect(1080, 0, 1080, 1080)).clone();
+        string folder = "./N_Compar0.1m/"+types[i]+"/";
+		
+        string l_name =  "l_img_" + types[i] + to_string(index) + ".png";
+        string r_name =  "r_img_" + types[i] + to_string(index) + ".png";
+        cout << "Saving images..." << types[i] << index << endl;
+        imwrite(l_name, left_rem);
+        imwrite(r_name, right_rem);
+    }
+
+}
+
 static bool readStringList(const string& filename, vector<string>& l)
 {
     l.resize(0);
@@ -200,50 +236,71 @@ int main(int argc, char** argv)
     
 // Create the stereo system object
     SurroundSystem SS; 
-//// Create the first camera object and fill its params
-//    ScaramuzzaModel SM1; // = SS.getCameraModel(SurroundSystem::CameraModels::SCARAMUZZA);
-//    SM1.setIntrinsics({ 350.8434, -0.0015, 2.1981 * pow(10, -6), -3.154 * pow(10, -9) }, cv::Vec2d(0, 0), cv::Matx22d(1, 0, 0, 1), 0.022);
-//    SM1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0, 1));
-//    SM1.setCamParams(origSize);
-//// Create the second camera object and fill its params
-//    ScaramuzzaModel SM2;
-//    SM2.setIntrinsics({ 350.8434, -0.0015, 2.1981 * pow(10, -6), -3.154 * pow(10, -9) }, cv::Vec2d(0, 0), cv::Matx22d(1, 0, 0, 1), 0.022);
-//    SM2.setExtrinsics(cv::Vec3d(1.0, 0, 0), cv::Vec4d(0, 0, 0.7071068, 0.7071068)); // 90^o
-//    SM2.setCamParams(origSize);
-    KBModel SM1;
-    SM1.setIntrinsics(KBParams({ 3.77322, -0.00060, 0.01464, 0.00000 }, cv::Vec2d(0, 0), cv::Matx22d(1, 0, 0, 1))); // 0.14428, 3.77322, -0.00060, 0.01464
-    SM1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0, 1));
+
+#ifdef MEI
+    MeiModel SM1;
+    SM1.setIntrinsics(1.47431, 0.000166, 0.00008, -0.208916, 0.153247, cv::Vec2d(0, 0), cv::Matx22d(849, 0, 0, 849));
+    SM1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));
     SM1.setCamParams(origSize);
-    KBModel SM2;
-    SM2.setIntrinsics(KBParams( { 3.77322, -0.00060, 0.01464, 0.00000 }, cv::Vec2d(0, 0), cv::Matx22d(1, 0, 0, 1))); // 3.77322, -0.00060, 0.01464 0.00000
-    SM2.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0, 1));
+    MeiModel SM2;
+    SM2.setIntrinsics(1.47431, 0.000166, 0.00008, -0.208916, 0.153247, cv::Vec2d(0, 0), cv::Matx22d(849, 0, 0, 849));
+    SM2.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, -0.3826834, 0.9238795));
     SM2.setCamParams(origSize);
-// Add these cams to the stereosystem
+#endif // MEI
+#ifdef SCARA
+    // Create the first camera object and fill its params
+    ScaramuzzaModel SM3; // = SS.getCameraModel(SurroundSystem::CameraModels::SCARAMUZZA);
+    SM3.setIntrinsics({ 344.3100, -0.0010, 4.0682 * pow(10, -7), -1.2138 * pow(10, -9) }, 0.022, cv::Vec2d(0, 0), cv::Matx22d(1, 0, 0, 1));
+    SM3.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));
+    SM3.setCamParams(origSize);
+    // Create the second camera object and fill its params
+    ScaramuzzaModel SM4;
+    SM4.setIntrinsics({ 344.3100, -0.0010, 4.0682 * pow(10, -7), -1.2138 * pow(10, -9) }, 0.022, cv::Vec2d(0, 0), cv::Matx22d(1, 0, 0, 1));
+    SM4.setExtrinsics(cv::Vec3d(1.0, 0, 0), cv::Vec4d(0, 0, -0.3826834, 0.9238795)); // 45^o
+    SM4.setCamParams(origSize);
+#endif // SCARA
+#ifdef KB
+    KBModel SM5;
+    SM5.setIntrinsics({ 0.000757676, -0.000325907, 0.0000403, -0.000001866 }, cv::Vec2d(0, 0), cv::Matx22d(343.536, 0, 0, 343.471));
+    SM5.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));
+    SM5.setCamParams(origSize);
+    KBModel SM6;
+    SM6.setIntrinsics( { 0.000757676, -0.000325907, 0.0000403, -0.000001866 }, cv::Vec2d(0, 0), cv::Matx22d(343.536, 0, 0, 343.471));
+    SM6.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, -0.3826834, 0.9238795));
+    SM6.setCamParams(origSize);
+#endif // KB
+#ifdef ATAN
+    AtanModel SM7;
+    SM7.setCamParams(origSize);
+    SM7.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));
+    AtanModel SM8;
+    SM8.setCamParams(origSize);
+    SM8.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0,-0.3826834, 0.9238795));
+#endif // ATAN
+
+
+ // Add these cams to the stereosystem
     SS.addNewCam(SM1);
     SS.addNewCam(SM2);
 // Create a stereosystem out of the previously created cameras (and target resolution). View direction set automatically 
-    int SPindex = SS.createStereopair(0, 1, newSize, cv::Vec3d(0,0,0), StereoMethod::SGBM);
-    //front.setDirection()
+    SS.createStereopair(0, 1, newSize, cv::Vec3d(0,0,0), StereoMethod::SGBM);
+    SS.addNewCam(SM3);
+    SS.addNewCam(SM4);
+    SS.createStereopair(2, 3, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
+    SS.addNewCam(SM5);
+    SS.addNewCam(SM6);
+    SS.createStereopair(4, 5, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
+    SS.addNewCam(SM7);
+    SS.addNewCam(SM8);
+    SS.createStereopair(6, 7, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
+
+
     SS.prepareLUTs(); 
     
 
     vector<Point> grid;                   // vectors of grid points
     vector<Point> gridDist;
     vector<Point> r_gridDist;
-    //ScaramuzzaModel SM1;
-    //SM1.setIntrinsics({ 350.8434, -0.0015, 2.1981 * pow(10, -6), -3.154 * pow(10, -9) }, cv::Vec2d(0, 0), cv::Matx22d(1, 0, 0, 1), 0.022);
-    //SM1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0,0,0,1));
-    //FisheyeDewarper dewarper(&SM1);
-    //dewarper.setSize(origSize, newSize, 90);
-    //dewarper.setRpy(0, 0, 0);
-    //
-    //ScaramuzzaModel SM2;
-    //SM2.setIntrinsics({ 350.8434, -0.0015, 2.1981 * pow(10, -6), -3.154 * pow(10, -9) }, cv::Vec2d(0, 0), cv::Matx22d(1, 0, 0, 1), 0.022);
-    //SM2.setExtrinsics(cv::Vec3d(1.0, 0, 0), cv::Vec4d(0, 0, 0, 1));
-    //FisheyeDewarper r_dewarper(&SM2);
-    //r_dewarper.setSize(origSize, newSize, 90);
-    //r_dewarper.setRpy(0, 0, 0);
-
 
     while(true)         //  iterate through images       
     {
@@ -263,7 +320,7 @@ int main(int argc, char** argv)
         //Mat leftImageRemapped(newSize, CV_8UC3, Scalar(0, 0, 0));
         //Mat rightImageRemapped(newSize, CV_8UC3, Scalar(0, 0, 0));
         Mat combinedRemap(Size(newSize.width*2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
-        SS.getImage(0, SurroundSystem::RECTIFIED, left, right, combinedRemap);
+        SS.getImage(3, SurroundSystem::RECTIFIED, left, right, combinedRemap);
 
         //bool textPut = true;
         //// draw grid
@@ -315,6 +372,9 @@ int main(int argc, char** argv)
             cout << "calculating depth" << endl;
             // depthSwitcher = true;
             break;
+        case 's': {
+            saveAllImages(SS, left, right, index);
+            break; }
         case 'z':
             exit(0);
         default: 
@@ -322,6 +382,6 @@ int main(int argc, char** argv)
             break;
         }
         
-        if (index == n_img - 1 || index < 0) index = 0;
+        if (index == n_img || index < 0) index = 0;
     }
 }

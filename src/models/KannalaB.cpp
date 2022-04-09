@@ -3,27 +3,26 @@
 
 KBModel::KBModel()
 {
-    k2 = 0;
-    k3 = 0;
-    k4 = 0;
-    k5 = 0;
+
 }
 
-KBModel::KBModel(KBParams mp)
+KBModel::KBModel(std::initializer_list<double> coeffs,
+    cv::Vec2d centerOffset, cv::Matx22d stretchMatrix)
 {
-    setIntrinsics(mp);
+    setIntrinsics(coeffs, centerOffset, stretchMatrix);
 }
 
-void KBModel::setIntrinsics(KBParams dp)
+void KBModel::setIntrinsics(std::initializer_list<double> coeffs,
+    cv::Vec2d centerOffset, cv::Matx22d stretchMatrix)
 {
-    this->k2 = dp.KB_polynom[0];
-    this->k3 = dp.KB_polynom[1];
-    this->k4 = dp.KB_polynom[2];
-    this->k5 = dp.KB_polynom[3];
+    this->kb_polynom.assign(coeffs.begin(), coeffs.end());       // treats both values as pointers 
+    this->centerOffset = centerOffset;
+    this->stretchMatrix = stretchMatrix;
 }
 
 cv::Point2d KBModel::projectWorldToPixel(cv::Mat worldPoint)
 {
+    /*
     double r = sqrt(worldPoint.at<float>(1) * worldPoint.at<float>(1) +
         worldPoint.at<float>(0) * worldPoint.at<float>(0));
     double theta = atan2(r, worldPoint.at<float>(2));
@@ -31,11 +30,22 @@ cv::Point2d KBModel::projectWorldToPixel(cv::Mat worldPoint)
     double phi = acos(worldPoint.at<float>(0) / r);
 
     // k1 =1
-    double poly = theta + k2 * pow(theta, 3) + k3 * pow(theta, 5) + k4 * pow(theta, 7) + k5 * pow(theta, 9);
+    double poly = theta + kb_polynom[0] * pow(theta, 3) + kb_polynom[1] * pow(theta, 5) +
+                          kb_polynom[2] * pow(theta, 7) + kb_polynom[3] * pow(theta, 9);
     // cos(acos()) ????
-    cv::Point imgPixel = poly * cv::Point2d(cos(phi), sin(phi));
-    toCorner(imgPixel, oldSize);
-    return imgPixel;
+    */
+
+    double theta = acos(worldPoint.at<float>(2) / cv::norm(worldPoint, cv::NormTypes::NORM_L2));
+    double phi = atan2(worldPoint.at<float>(1), worldPoint.at<float>(0));
+    double poly = theta + kb_polynom[0] * pow(theta, 3) + kb_polynom[1] * pow(theta, 5) +
+        kb_polynom[2] * pow(theta, 7) + kb_polynom[3] * pow(theta, 9);
+
+    cv::Vec2d imgPixel = poly * cv::Point2d(cos(phi), sin(phi));
+    cv::Point fypixel(stretchMatrix * imgPixel + centerOffset);        // technically could do toCorner's job, but I'll keep it simple for now
+    toCorner(fypixel, oldSize);
+    //std::cout << fypixel << std::endl;
+
+    return fypixel;
 }
 
 void KBModel::backprojectSymmetric(cv::Point pxl, double& theta, double& phi)
@@ -53,19 +63,19 @@ void KBModel::backprojectSymmetric(cv::Point pxl, double& theta, double& phi)
     }
 
     int npow = 9;
-    if (k5 == 0.0)
+    if (kb_polynom[3] == 0.0)
     {
         npow -= 2;
     }
-    if (k4 == 0.0)
+    if (kb_polynom[2] == 0.0)
     {
         npow -= 2;
     }
-    if (k3 == 0.0)
+    if (kb_polynom[1] == 0.0)
     {
         npow -= 2;
     }
-    if (k2 == 0.0)
+    if (kb_polynom[0] == 0.0)
     {
         npow -= 2;
     }
@@ -76,19 +86,19 @@ void KBModel::backprojectSymmetric(cv::Point pxl, double& theta, double& phi)
 
     if (npow >= 3)
     {
-        coeffs.at<double>(3) = k2;
+        coeffs.at<double>(3) = kb_polynom[0];
     }
     if (npow >= 5)
     {
-        coeffs.at<double>(5) = k3;
+        coeffs.at<double>(5) = kb_polynom[1];
     }
     if (npow >= 7)
     {
-        coeffs.at<double>(7) = k4;
+        coeffs.at<double>(7) = kb_polynom[2];
     }
     if (npow >= 9)
     {
-        coeffs.at<double>(9) = k5;
+        coeffs.at<double>(9) = kb_polynom[3];
     }
 
     if (npow == 1)

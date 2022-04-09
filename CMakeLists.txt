@@ -16,10 +16,12 @@ set(DEWARPER_SRCS
 	src/FisheyeDewarper.cpp
 	src/SurroundSystem.cpp
 	src/StereoPair.cpp
+	src/models/CameraModel.cpp
 	src/models/Scaramuzza.cpp
 	src/models/Pinhole.cpp
 	src/models/Atan.cpp
 	src/models/Mei.cpp
+	src/models/KannalaB.cpp
 
 	include/CameraModel.h
 	include/FisheyeDewarper.hpp

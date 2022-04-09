@@ -28,6 +28,30 @@ Stereopair::Stereopair(std::shared_ptr<CameraModel> lCam, std::shared_ptr<Fishey
     setStereoMethod(sm);
 }
 
+cv::Vec3d Stereopair::quatToRpy(cv::Vec4d quaternion)
+{
+    // roll (x-axis rotation)
+    double sinr_cosp = 2 * (quaternion[3] * quaternion[0] + quaternion[1] * quaternion[2]);
+    double cosr_cosp = 1 - 2 * (quaternion[0] * quaternion[0] + quaternion[1] * quaternion[1]);
+    double roll = std::atan2(sinr_cosp, cosr_cosp);
+
+    // pitch (y-axis rotation)
+    double pitch;
+    double sinp = 2 * (quaternion[3] * quaternion[1] - quaternion[2] * quaternion[0]);
+    if (std::abs(sinp) >= 1)
+        pitch = std::copysign(M_PI / 2, sinp); // use 90 degrees if out of range
+    else
+        pitch = std::asin(sinp);
+
+    // yaw (z-axis rotation)
+    double siny_cosp = 2 * (quaternion[3] * quaternion[2] + quaternion[0] * quaternion[1]);
+    double cosy_cosp = 1 - 2 * (quaternion[1] * quaternion[1] + quaternion[2] * quaternion[2]);
+    double yaw = std::atan2(siny_cosp, cosy_cosp);
+    
+    
+    return cv::Vec3d(yaw, pitch, roll);
+}
+
 void Stereopair::fillMaps()
 {
 	leftDewarper->fillMaps();
@@ -52,29 +76,11 @@ void Stereopair::setStereoMethod(StereoMethod sm)
 
 void Stereopair::setOptimalDirecton()
 {
-	cv::Vec4d normilized;
-	cv::normalize((leftCamera->rotation + rightCamera->rotation), normilized, 1.0, cv::NORM_L1);;
-
-    // roll (x-axis rotation)
-    double sinr_cosp = 2 * (normilized[3] * normilized[0] + normilized[1] * normilized[2]);
-    double cosr_cosp = 1 - 2 * (normilized[0] * normilized[0] + normilized[1] * normilized[1]);
-    double roll = std::atan2(sinr_cosp, cosr_cosp);
-
-    // pitch (y-axis rotation)
-    double pitch;
-    double sinp = 2 * (normilized[3] * normilized[1] - normilized[2] * normilized[0]);
-    if (std::abs(sinp) >= 1)
-        pitch = std::copysign(M_PI / 2, sinp); // use 90 degrees if out of range
-    else
-        pitch = std::asin(sinp);
-
-    // yaw (z-axis rotation)
-    double siny_cosp = 2 * (normilized[3] * normilized[2] + normilized[0] * normilized[1]);
-    double cosy_cosp = 1 - 2 * (normilized[1] * normilized[1] + normilized[2] * normilized[2]);
-    double yaw = std::atan2(siny_cosp, cosy_cosp);
-
-    leftDewarper->setRpy(  yaw, pitch, roll);   // FIXME:  wrong 
-    rightDewarper->setRpy(-yaw, pitch, roll);
+    cv::Vec3d l_rpy = quatToRpy(leftCamera->rotation);
+    cv::Vec3d r_rpy = quatToRpy(rightCamera->rotation);
+    
+    leftDewarper->setRpyRad(r_rpy);   // FIXME:  wrong 
+    rightDewarper->setRpyRad(l_rpy);
 }
 
 // get rectified?
@@ -93,7 +99,7 @@ int Stereopair::getDisparity(cv::OutputArray& dist, cv::InputArray& leftImage, c
     cv::Mat rightImageRemapped(rightCamera->newSize, CV_8UC3, cv::Scalar(0, 0, 0));
     //
     getRemapped(leftImage.getMat(), rightImage.getMat(), leftImageRemapped, rightImageRemapped);
-    matcher->compute(leftImage.getMat(), rightImage.getMat(), dist);
+    matcher->compute(leftImageRemapped, rightImageRemapped, dist);
 
     return 0;
 }
