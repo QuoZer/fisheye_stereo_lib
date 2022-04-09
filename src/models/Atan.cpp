@@ -37,27 +37,18 @@ cv::Point2d AtanModel::projectWorldToPixel(cv::Mat worldPoint)
     double X = worldPoint.at<float>(0);
     double Y = worldPoint.at<float>(1);
     double Z = worldPoint.at<float>(2);
+    //  sqrt destroys signs so I remember them here
+    int8_t xSign = 1, ySign = 1;
+    if (X == 0) X += 0.0001;
+    else if (X < 0) xSign = -1;
+    if (Y == 0) Y += 0.0001;
+    else if (Y < 0) ySign = -1;
     double phi = atan2( sqrt(X * X + Y * Y), Z);
-    double rho = 0;
-    double r = 0;
-    double error = 1;
-
-    //int iter = 0;
-    //do
-    //{
-    //    double R = cos(r);
-
-    //    error = atan2(R, r) - phi;
-    //    r = r + 1.15 * error;
-    //    iter++;
-    //    //std::cout << "It " << iter << " Point: " << worldPoint << " | Rho: " << rho << " f(Rho): " << 424242 << " Error: " << error << std::endl;
-    //} while (std::abs(error) > 0.005 && iter < 100);
-    //this->errorsum += error;
 
     double xFocus = 1 * oldSize.width / M_PI;       
     double yFocus = 1 * oldSize.height / M_PI;
-    double u = xFocus * (phi) / sqrt((Y * Y) / (X * X) + 1);
-    double v = yFocus * (phi) / sqrt((X * X) / (Y * Y) + 1);
+    double u = xSign * xFocus * (phi) / sqrt((Y * Y) / (X * X) + 1);
+    double v = ySign * yFocus * (phi) / sqrt((X * X) / (Y * Y) + 1);
 
     cv::Point fypixel(stretchMatrix * cv::Vec2d(u, v) + centerOffset);        // technically could do toCorner's job, but I'll keep it simple for now
     toCorner(fypixel, oldSize);
