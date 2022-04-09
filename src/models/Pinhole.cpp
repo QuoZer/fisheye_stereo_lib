@@ -24,7 +24,7 @@ cv::Mat PinholeModel::projectPixelToWorld(cv::Point pixel)
     toCenter(pixel, newSize);
     //std::cout << pixel << " | " << newSize << std::endl;
 
-    float cz = 200.0;                                    // doesnt really affect much
+    float cz = 10;                                    // doesnt really affect much
     double xFovRad = xFov * M_PI / 180;
     double yFovRad = yFov * M_PI / 180;
     double xPinholeFocus = newSize.width / (2 * tan(xFovRad / 2));

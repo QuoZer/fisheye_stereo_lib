@@ -1,4 +1,6 @@
 #include "FisheyeDewarper.hpp"
+
+#define CVPLOT_HEADER_ONLY
 #include <CvPlot/cvplot.h>
 
 FisheyeDewarper::FisheyeDewarper()
@@ -100,7 +102,10 @@ void FisheyeDewarper::fillMaps()
     createMaps();
     frameBorder.clear();
     std::cout << "proceeding to fill maps " << std::endl;
+	
+    std::vector<float> points(newSize.width);
 
+    double max_xy = 0;
     for (int i = 0; i < newSize.width; i++)
     {
         for (int j = 0; j < newSize.height; j++)
@@ -120,15 +125,22 @@ void FisheyeDewarper::fillMaps()
             {
                 frameBorder.push_back(cv::Point(distPoint.y, distPoint.x));
             }
+            // save the z value of each point
+            if (worldPoint.at<float>(0) > max_xy || worldPoint.at<float>(1) > max_xy) {
+				max_xy = std::max(worldPoint.at<float>(0), worldPoint.at<float>(1));
+            }
 
             //map1.at<float>(distPoint.x, distPoint.y) =  j;
             //map2.at<float>(distPoint.x, distPoint.y) =  i;
             map1.at<float>(i, j) = distPoint.y;
             map2.at<float>(i, j) = distPoint.x;
         }
-        if (i % 100 == 0) std::cout << "Collumn N" << i << std::endl;
+        if (i % 100 == 0) std::cout << "Collumn N" << i << " errorsum: " << cameraModel->errorsum << std::endl;
     }
-    std::cout << "Avg. error: " << cameraModel->errorsum / (newSize.area()) << std::endl;
+    //auto axes = CvPlot::plot(points, "-o");
+    //CvPlot::show("dome", axes);
+	
+    std::cout << "Avg. error: " << cameraModel->errorsum / (newSize.area()) << " xy_max " << max_xy << std::endl;
 
 
 }

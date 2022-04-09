@@ -68,6 +68,7 @@ void SurroundSystem::prepareLUTs()
 // TODO: delete r and l - use constant image pointers instead?
 void SurroundSystem::getImage(int stereopairIndex, ImageType IT, cv::Mat& l, cv::Mat& r, cv::Mat& dst)
 {
+	// TODO: check if index is valid
 	cv::Size out_size = stereopairs[stereopairIndex]->outputSize;
 	cv::Mat leftImageRemapped(out_size, CV_8UC3, cv::Scalar(0, 0, 0));
 	cv::Mat rightImageRemapped(out_size, CV_8UC3, cv::Scalar(0, 0, 0));	// TODO: rework 'size' system

@@ -44,7 +44,7 @@ public:	///* Projection functions *///
 	cv::Mat projectPixelToWorld(cv::Point pixel) { return cv::Mat(oldSize, CV_8UC3, cv::Scalar(0, 0, 0)); }
 	
 public:
-	void setIntrinsics(cv::Vec2d centerOffset, cv::Matx22d stretchMatrix, double scaleFactor) { return; };
+	void setIntrinsics(cv::Vec2d centerOffset, cv::Matx22d stretchMatrix);
 
 };
 
