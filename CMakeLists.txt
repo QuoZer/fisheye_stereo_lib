@@ -9,6 +9,7 @@ project( fisheye_stereo )
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS}
  ${CMAKE_CURRENT_SOURCE_DIR}/include
+ D:/Work/Coding/Repos/cv-plot/CvPlot/inc
 )
 
 set(DEWARPER_SRCS
@@ -16,10 +17,12 @@ set(DEWARPER_SRCS
 	src/FisheyeDewarper.cpp
 	src/SurroundSystem.cpp
 	src/StereoPair.cpp
+	src/Utils.cpp
 	src/models/CameraModel.cpp
 	src/models/Scaramuzza.cpp
 	src/models/Pinhole.cpp
 	src/models/Atan.cpp
+	src/models/RealAtan.cpp
 	src/models/Mei.cpp
 	src/models/KannalaB.cpp
 
@@ -28,6 +31,7 @@ set(DEWARPER_SRCS
 	include/models.h
 	include/SurroundSystem.hpp
 	include/StereoPair.hpp
+	include/Utils.h
 )
 
 add_executable( dewarper ${DEWARPER_SRCS})

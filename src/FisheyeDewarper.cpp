@@ -149,6 +149,6 @@ void FisheyeDewarper::fillMaps()
 cv::Mat FisheyeDewarper::dewarpImage(cv::Mat inputImage)
 {
     cv::Mat remapped(newSize, CV_8UC3, cv::Scalar(0, 0, 0));
-    cv::remap(inputImage, remapped, map1, map2, cv::INTER_CUBIC, cv::BORDER_CONSTANT);
+    cv::remap(inputImage, remapped, map1, map2, cv::INTER_NEAREST, cv::BORDER_CONSTANT);
     return remapped;
 }

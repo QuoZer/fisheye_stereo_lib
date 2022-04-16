@@ -48,6 +48,22 @@ public:
 
 };
 
+class RealAtanModel : public CameraModel
+{
+private:	///* Intrinsics *///
+	cv::Vec2d centerOffset;				// Distortion center
+	cv::Matx22d stretchMatrix;			// Stretch matrix
+	double lambda;						// Scale factor 
+
+public:	///* Projection functions *///
+	cv::Point2d projectWorldToPixel(cv::Mat worldPoint);
+	cv::Mat projectPixelToWorld(cv::Point pixel) { return cv::Mat(oldSize, CV_8UC3, cv::Scalar(0, 0, 0)); }
+
+public:
+	void setIntrinsics(cv::Vec2d centerOffset, cv::Matx22d stretchMatrix);
+
+};
+
 class KBModel : public CameraModel
 {
 private:
