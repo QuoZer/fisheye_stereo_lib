@@ -77,6 +77,8 @@ void SurroundSystem::getImage(int stereopairIndex, ImageType IT, cv::Mat& l, cv:
 		break;
 	case SurroundSystem::RECTIFIED:
 		stereopairs[stereopairIndex]->getRemapped(l, r, leftImageRemapped, rightImageRemapped) ;
+		leftImageRemapped = leftImageRemapped(cv::Rect(0, 0, out_size.width, out_size.height));
+		rightImageRemapped = rightImageRemapped(cv::Rect(0, 0, out_size.width, out_size.height));
 		cv::hconcat(leftImageRemapped, rightImageRemapped, dst);
 		return;
 	case SurroundSystem::DISPARITY:
