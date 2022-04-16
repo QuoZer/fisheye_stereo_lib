@@ -176,7 +176,7 @@ int main(int argc, char** argv)
     SS.addNewCam(SM3);
     SS.createStereopair(0, 1, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
     SS.createStereopair(1, 3, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
-    SS.createStereopair(2, 1, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
+    SS.createStereopair(2, 0, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
     SS.createStereopair(3, 2, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
 	
 #endif
@@ -206,12 +206,21 @@ int main(int argc, char** argv)
         //Mat leftImageRemapped(newSize, CV_8UC3, Scalar(0, 0, 0));
         //Mat rightImageRemapped(newSize, CV_8UC3, Scalar(0, 0, 0));
 #ifdef FOUR_CAM_SYSTEM
+        Mat combinedRemap1(Size(newSize.width * 2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
+        SS.getImage(0, SurroundSystem::RECTIFIED, right, left, combinedRemap1);
+        Mat combinedRemap2(Size(newSize.width * 2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
+        SS.getImage(1, SurroundSystem::RECTIFIED, right, left, combinedRemap2);
+        Mat combinedRemap3(Size(newSize.width * 2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
+        SS.getImage(2, SurroundSystem::RECTIFIED, right, left, combinedRemap3);
+        Mat combinedRemap4(Size(newSize.width * 2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
+        SS.getImage(3, SurroundSystem::RECTIFIED, right, left, combinedRemap4);
 
-#endif // FO
+        ShowManyImages("Images", 4, combinedRemap1, combinedRemap2, combinedRemap3, combinedRemap4);
+#endif // FOUR_CAM_SYSTEM
 
 		
         Mat combinedRemap(Size(newSize.width*2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
-        SS.getImage(4, SurroundSystem::RECTIFIED, left, right, combinedRemap);
+        SS.getImage(0, SurroundSystem::RECTIFIED, left, right, combinedRemap);
 
         //bool textPut = true;
         //// draw grid
@@ -242,8 +251,8 @@ int main(int argc, char** argv)
         //ShowManyImages("Images", 4, right, left,leftImageRemapped, rightImageRemapped  );
         //imwrite("rightImageRemapped.png", rightImageRemapped);
         // Displaying the disparity map
+		
         cv::imshow("disparity", combinedRemap);
-        
 
         char key = (char)waitKey(0);
         switch (key){

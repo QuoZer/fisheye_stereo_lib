@@ -23,6 +23,7 @@ public:
 private:
 	// get the transaltion and rotation from cam2 to cam1
 	void calcExtrinsics(cv::OutputArray mtx, cv::InputArray poseCam1, cv::InputArray poseCam2);
+	int sign(double x);
 
 public:
 	Stereopair(std::shared_ptr<CameraModel> lCam, std::shared_ptr<FisheyeDewarper> lDWarp,

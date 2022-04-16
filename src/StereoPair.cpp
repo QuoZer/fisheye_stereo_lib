@@ -74,28 +74,39 @@ void Stereopair::setStereoMethod(StereoMethod sm)
     }
 }
 
+// return a number's sign
+int Stereopair::sign(double x)
+{
+	if (x > 0)
+		return 1;
+	else if (x < 0)
+		return -1;
+	else
+		return 0;
+}
+
 void Stereopair::setOptimalDirecton()
 {
     cv::Vec3d l_rpy = quatToRpy(leftCamera->rotation);
     cv::Vec3d r_rpy = quatToRpy(rightCamera->rotation);
 
     // 2D case
-    double l_z = l_rpy[0];
+    double l_z = l_rpy[0];  //yaw
 	double r_z = r_rpy[0];
 
 	double dir_z = (l_z + r_z) / 2;
-
-    if (std::abs(l_z) + std::abs(r_z) > 3.14 && std::min(l_z, r_z) < 0)     // not sure
+	
+    if (std::abs(l_z) + std::abs(r_z) > 3.14 && std::min(l_z, r_z) < 0 && std::max(l_z, r_z) > 0)     // not sure
     {
 		//lower half 
         dir_z += 3.14;		
     }
 	
-	l_rpy[0] = l_z - dir_z;
-	r_rpy[0] = r_z - dir_z;	
-    
-    leftDewarper->setRpyRad(r_rpy);   // FIXME:  wrong 
-    rightDewarper->setRpyRad(l_rpy);
+	l_rpy[0] = (l_z - dir_z);
+	r_rpy[0] = (r_z - dir_z);	
+
+    leftDewarper->setRpyRad(l_rpy);   // FIXME:  wrong 
+    rightDewarper->setRpyRad(r_rpy);
 }
 
 // get rectified?
