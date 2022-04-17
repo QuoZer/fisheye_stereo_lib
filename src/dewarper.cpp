@@ -71,8 +71,7 @@ int main(int argc, char** argv)
     int n_img = (int)image_list.size();
     cout << "Images: " << n_img << endl;
 
-    int index = 2;
-    bool recalcFlag = true;
+
 
     Size origSize(1080, 1080);       //imread(image_list[0], -1).size();
     Size newSize(540, 540);        // origSize * 1;            // determines the size of the output image
@@ -187,70 +186,45 @@ int main(int argc, char** argv)
     vector<Point> grid;                   // vectors of grid points
     vector<Point> gridDist;
     vector<Point> r_gridDist;
-
+    int index = 0;
+    bool recalcFlag = true;
     while(true)         //  iterate through images       
     {
         Mat img = imread(image_list[index], -1);
-        Mat right = img(Rect(0, 0, 1080, 1080)).clone();                // FIXME: WRONG 
+        Mat right = img(Rect(0, 0, 1080, 1080)).clone();                // FIXME: WRONG L/R
         Mat left = img(Rect(1080, 0, 1080, 1080)).clone();
 
         if (recalcFlag){
-                                                       
-            //dewarper.fillMaps();                      // fill new maps with current parameters. 
-            //r_dewarper.fillMaps();
             cout << "Maps ready" << endl;
 
             recalcFlag = false;
         }
 
-        //Mat leftImageRemapped(newSize, CV_8UC3, Scalar(0, 0, 0));
-        //Mat rightImageRemapped(newSize, CV_8UC3, Scalar(0, 0, 0));
 #ifdef FOUR_CAM_SYSTEM
+        Mat img_front = imread(image_list[0], -1);
+		Mat img_back  = imread(image_list[1], -1);
+        Mat left_front  = img_front(Rect(0, 0, 1080, 1080)).clone();                // TODO: remake
+        Mat right_front = img_front(Rect(1080, 0, 1080, 1080)).clone();
+		Mat left_back   = img_back( Rect(0, 0, 1080, 1080)).clone();
+		Mat right_back  = img_back( Rect(1080, 0, 1080, 1080)).clone();
+		
         Mat combinedRemap1(Size(newSize.width * 2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
-        SS.getImage(0, SurroundSystem::RECTIFIED, right, left, combinedRemap1);
+        SS.getImage(0, SurroundSystem::RECTIFIED, left_front, right_front, combinedRemap1);
         Mat combinedRemap2(Size(newSize.width * 2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
-        SS.getImage(1, SurroundSystem::RECTIFIED, right, left, combinedRemap2);
+        SS.getImage(1, SurroundSystem::RECTIFIED, right_front, left_back, combinedRemap2);
         Mat combinedRemap3(Size(newSize.width * 2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
-        SS.getImage(2, SurroundSystem::RECTIFIED, right, left, combinedRemap3);
+        SS.getImage(2, SurroundSystem::RECTIFIED, right_back, left_front, combinedRemap3);
         Mat combinedRemap4(Size(newSize.width * 2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
-        SS.getImage(3, SurroundSystem::RECTIFIED, right, left, combinedRemap4);
+        SS.getImage(3, SurroundSystem::RECTIFIED, left_back, right_back, combinedRemap4);
 
         ShowManyImages("Images", 4, combinedRemap1, combinedRemap2, combinedRemap3, combinedRemap4);
+
 #endif // FOUR_CAM_SYSTEM
 
 		
         Mat combinedRemap(Size(newSize.width*2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
         SS.getImage(0, SurroundSystem::RECTIFIED, left, right, combinedRemap);
 
-        //bool textPut = true;
-        //// draw grid
-        //for each (Point center in gridDist)
-        //{
-        //    if (!textPut) {
-        //        Point textOrigin = center - Point(20,20);
-        //        textPut = true;
-        //    }
-        //    circle(left, center, 4, Scalar(115, 25, 10), 3);
-        //}
-        //for each (Point center in r_gridDist)
-        //{
-        //    if (!textPut) {
-        //        Point textOrigin = center - Point(20, 20);
-        //        textPut = true;
-        //    }
-        //    circle(right, center, 4, Scalar(115, 25, 10), 3);
-        //}
-
-        //std::vector<cv::Point> hull;
-        //convexHull(gridDist, hull);
-        //cout << "Contour area is" << contourArea(hull) << std::endl;
-
-        // Converting images to grayscale
-        //cv::cvtColor(leftImageRemapped, leftImageRemapped, cv::COLOR_BGR2GRAY);
-        //cv::cvtColor(rightImageRemapped, rightImageRemapped, cv::COLOR_BGR2GRAY);
-        //ShowManyImages("Images", 4, right, left,leftImageRemapped, rightImageRemapped  );
-        //imwrite("rightImageRemapped.png", rightImageRemapped);
-        // Displaying the disparity map
 		
         cv::imshow("disparity", combinedRemap);
 
@@ -273,7 +247,11 @@ int main(int argc, char** argv)
             // depthSwitcher = true;
             break;
         case 's': {
-            saveAllImages(SS, left, right, index);
+            //saveWithAllModels(SS, left, right, index);
+            savePano(SS, combinedRemap1, 2, 0);
+            savePano(SS, combinedRemap2, 2, 1);
+            savePano(SS, combinedRemap3, 2, 2);
+            savePano(SS, combinedRemap4, 2, 3);
             break; }
         case 'z':
             exit(0);

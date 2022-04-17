@@ -19,6 +19,8 @@ void changeContrastAndBrightness(cv::Mat& image, double alpha, int beta);
 
 void ShowManyImages(std::string title, int nArgs, ...);
 
-void saveAllImages(SurroundSystem& SS, cv::Mat& left, cv::Mat& right, int index);
+void saveWithAllModels(SurroundSystem& SS, cv::Mat& left, cv::Mat& right, int index);
+
+void savePano(SurroundSystem& SS, cv::Mat& combinedRemap, int type_i, int sp_index);
 
 bool readStringList(const std::string& filename, std::vector<std::string>& l);

@@ -137,7 +137,7 @@ void ShowManyImages(string title, int nArgs, ...) {
 
 std::map<int, string> types = { {0, "MEI"}, {1, "SCARA"}, {2, "KB"}, {3, "ATAN"}, {4, "REAL_ATAN"}};
 
-void saveAllImages(SurroundSystem& SS, cv::Mat& left, cv::Mat& right, int index)
+void saveWithAllModels(SurroundSystem& SS, cv::Mat& left, cv::Mat& right, int index)
 {
     Size newSize(540, 540);
     Mat combinedRemap(Size(newSize.width * 2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
@@ -145,16 +145,35 @@ void saveAllImages(SurroundSystem& SS, cv::Mat& left, cv::Mat& right, int index)
     {
         SS.getImage(i, SurroundSystem::RECTIFIED, left, right, combinedRemap);
         Mat left_rem = combinedRemap(cv::Rect(0, 0, newSize.width, newSize.height)).clone();
-        Mat right_rem = combinedRemap(cv::Rect(newSize.width*2, 0, newSize.width, newSize.height)).clone();     //FIXME: this is not right
+        Mat right_rem = combinedRemap(cv::Rect(newSize.width, 0, newSize.width, newSize.height)).clone();     
         string folder = "D:/Work/Coding/Repos/fisheye_stereo/data/3_Compar0.1m/" + types[i] + "/";
 
-        string l_name = folder + "l_img_" + types[i] + std::to_string(index) + ".png";
+        string l_name = folder + "l_img_" + types[i] + std::to_string(index) + ".png";      // exmpl: l_img_ATAN3.png
         string r_name = folder + "r_img_" + types[i] + std::to_string(index) + ".png";
         cout << "Saving images..." << types[i] << index << endl;
         imwrite(l_name, left_rem);
         imwrite(r_name, right_rem);
     }
 
+}
+
+void savePano(SurroundSystem& SS, cv::Mat& combinedRemap, int type_i, int sp_index)
+{
+    int i = sp_index;
+	
+    Size newSize(540, 540);
+
+    Mat left_rem = combinedRemap(cv::Rect(0, 0, newSize.width, newSize.height)).clone();
+    Mat right_rem = combinedRemap(cv::Rect(newSize.width, 0, newSize.width, newSize.height)).clone();
+    string folder = "D:/Work/Coding/Repos/fisheye_stereo/data/1_4System0.1m/" + types[type_i] + "/";
+
+    string l_name = folder + std::to_string(i) + "_l_img" + ".png"; // exmpl: 0_l_img.png       SP number is left camera index
+    string r_name = folder + std::to_string(i) + "_r_img" + ".png";
+    cout << "Saving images..." << types[type_i] << " | " << i << "/" << SS.getNumOfSP() << endl;
+    imwrite(l_name, left_rem);
+    imwrite(r_name, right_rem);
+    
+	
 }
 
 bool readStringList(const string& filename, vector<string>& l)
