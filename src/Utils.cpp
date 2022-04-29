@@ -137,7 +137,7 @@ void ShowManyImages(string title, int nArgs, ...) {
 
 std::map<int, string> types = { {0, "MEI"}, {1, "SCARA"}, {2, "KB"}, {3, "ATAN"}, {4, "REAL_ATAN"}};
 
-void saveWithAllModels(SurroundSystem& SS, cv::Mat& left, cv::Mat& right, int index)
+void saveWithAllModels(string base_folder, SurroundSystem& SS, cv::Mat& left, cv::Mat& right, int index)
 {
     Size newSize(540, 540);
     Mat combinedRemap(Size(newSize.width * 2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
@@ -146,7 +146,7 @@ void saveWithAllModels(SurroundSystem& SS, cv::Mat& left, cv::Mat& right, int in
         SS.getImage(i, SurroundSystem::RECTIFIED, left, right, combinedRemap);
         Mat left_rem = combinedRemap(cv::Rect(0, 0, newSize.width, newSize.height)).clone();
         Mat right_rem = combinedRemap(cv::Rect(newSize.width, 0, newSize.width, newSize.height)).clone();     
-        string folder = "D:/Work/Coding/Repos/fisheye_stereo/data/3_Compar0.1m/" + types[i] + "/";
+        string folder = base_folder + types[i] + "/";
 
         string l_name = folder + "l_img_" + types[i] + std::to_string(index) + ".png";      // exmpl: l_img_ATAN3.png
         string r_name = folder + "r_img_" + types[i] + std::to_string(index) + ".png";
@@ -157,7 +157,7 @@ void saveWithAllModels(SurroundSystem& SS, cv::Mat& left, cv::Mat& right, int in
 
 }
 
-void savePano(SurroundSystem& SS, cv::Mat& combinedRemap, int type_i, int sp_index)
+void savePano(string base_folder, SurroundSystem& SS, cv::Mat& combinedRemap, int type_i, int sp_index)
 {
     int i = sp_index;
 	
@@ -165,7 +165,7 @@ void savePano(SurroundSystem& SS, cv::Mat& combinedRemap, int type_i, int sp_ind
 
     Mat left_rem = combinedRemap(cv::Rect(0, 0, newSize.width, newSize.height)).clone();
     Mat right_rem = combinedRemap(cv::Rect(newSize.width, 0, newSize.width, newSize.height)).clone();
-    string folder = "D:/Work/Coding/Repos/fisheye_stereo/data/1_4System0.1m/" + types[type_i] + "/";
+    string folder = base_folder + types[type_i] + "/";
 
     string l_name = folder + std::to_string(i) + "_l_img" + ".png"; // exmpl: 0_l_img.png       SP number is left camera index
     string r_name = folder + std::to_string(i) + "_r_img" + ".png";

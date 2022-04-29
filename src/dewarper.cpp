@@ -26,12 +26,12 @@ enum CAM_MODEL
     KB,
     ATAN
 };
-//#define MEI
-//#define SCARA
-//#define KB
-//#define ATAN
-//#define REAL_ATAN
-#define FOUR_CAM_SYSTEM
+#define MEI
+#define SCARA
+#define KB
+#define ATAN
+#define REAL_ATAN
+//#define FOUR_CAM_SYSTEM
 
 int px_counter = 0;
 
@@ -182,6 +182,8 @@ int main(int argc, char** argv)
 
 // Create a stereosystem out of the previously created cameras (and target resolution). View direction set automatically 
     SS.prepareLUTs(); 
+
+    string path = "D:/Work/Coding/Repos/fisheye_stereo/data/1_Compar0.1m/"; //TODO: exctract from argument
     
     vector<Point> grid;                   // vectors of grid points
     vector<Point> gridDist;
@@ -223,7 +225,7 @@ int main(int argc, char** argv)
 
 		
         Mat combinedRemap(Size(newSize.width*2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
-        SS.getImage(0, SurroundSystem::RECTIFIED, left, right, combinedRemap);
+        SS.getImage(0, SurroundSystem::RECTIFIED, right,left,  combinedRemap);
 
 		
         cv::imshow("disparity", combinedRemap);
@@ -247,11 +249,11 @@ int main(int argc, char** argv)
             // depthSwitcher = true;
             break;
         case 's': {
-            //saveWithAllModels(SS, left, right, index);
-            savePano(SS, combinedRemap1, 2, 0);
-            savePano(SS, combinedRemap2, 2, 1);
-            savePano(SS, combinedRemap3, 2, 2);
-            savePano(SS, combinedRemap4, 2, 3);
+            saveWithAllModels(path, SS, right,left,  index);
+            //savePano(SS, combinedRemap1, 2, 0);
+            //savePano(SS, combinedRemap2, 2, 1);
+            //savePano(SS, combinedRemap3, 2, 2);
+            //savePano(SS, combinedRemap4, 2, 3);
             break; }
         case 'z':
             exit(0);
