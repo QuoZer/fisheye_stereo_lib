@@ -25,6 +25,7 @@ set(DEWARPER_SRCS
 	src/models/RealAtan.cpp
 	src/models/Mei.cpp
 	src/models/KannalaB.cpp
+	src/models/DoubleSphere.cpp
 
 	include/CameraModel.h
 	include/FisheyeDewarper.hpp

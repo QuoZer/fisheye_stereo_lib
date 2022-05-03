@@ -26,11 +26,12 @@ enum CAM_MODEL
     KB,
     ATAN
 };
-#define MEI
-#define SCARA
-#define KB
-#define ATAN
-#define REAL_ATAN
+//#define MEI
+//#define SCARA
+//#define KB
+//#define ATAN
+//#define REAL_ATAN
+#define DS
 //#define FOUR_CAM_SYSTEM
 
 int px_counter = 0;
@@ -151,6 +152,20 @@ int main(int argc, char** argv)
     SS.addNewCam(SM10);
     SS.createStereopair(8, 9, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
 #endif // ATAN
+#ifdef DS
+    DSModel SM11;
+    SM11.setCamParams(origSize);
+    SM11.setIntrinsics(0.5648855, -0.27168128, cv::Vec2d(0, 0), cv::Matx22d(255, 0, 0, 255));
+    SM11.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.9238795, 0.3826834));
+    DSModel SM12;
+    SM12.setCamParams(origSize);
+    SM12.setIntrinsics(0.5648855, -0.27168128, cv::Vec2d(0, 0), cv::Matx22d(255, 0, 0, 255));
+    SM12.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));
+
+    SS.addNewCam(SM11);
+    SS.addNewCam(SM12);
+    SS.createStereopair(0, 1, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
+#endif
 #ifdef FOUR_CAM_SYSTEM
     KBModel SM0;
     SM0.setIntrinsics({ 0.000757676, -0.000325907, 0.0000403, -0.000001866 }, cv::Vec2d(0, 0), cv::Matx22d(343.536, 0, 0, 343.471));

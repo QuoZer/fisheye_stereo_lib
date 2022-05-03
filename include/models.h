@@ -98,7 +98,20 @@ public:
 	MeiModel(double xi, double p1, double p2, double k1, double k2, cv::Vec2d centerOffset, cv::Matx22d stretchMatrix);
 	void setIntrinsics(double xi, double p1, double p2, double k1, double k2, cv::Vec2d centerOffset, cv::Matx22d stretchMatrix);
 	cv::Point2d projectWorldToPixel(cv::Mat worldPoint);
-	cv::Mat MeiModel::projectPixelToWorld(cv::Point pixel);
+	cv::Mat projectPixelToWorld(cv::Point pixel);
+};
 
 
+class DSModel : public CameraModel
+{
+private:
+	double alpha;
+	double dzeta;
+
+public:
+	DSModel();
+	DSModel(double alpha, double dzeta, cv::Vec2d centerOffset, cv::Matx22d stretchMatrix);
+	void setIntrinsics(double alpha, double dzeta, cv::Vec2d centerOffset, cv::Matx22d stretchMatrix);
+	cv::Point2d projectWorldToPixel(cv::Mat worldPoint);
+	cv::Mat projectPixelToWorld(cv::Point pixel);
 };
