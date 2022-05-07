@@ -26,11 +26,11 @@ enum CAM_MODEL
     KB,
     ATAN
 };
-//#define MEI
-//#define SCARA
-//#define KB
-//#define ATAN
-//#define REAL_ATAN
+#define MEI
+#define SCARA
+#define KB
+#define ATAN
+#define REAL_ATAN
 #define DS
 //#define FOUR_CAM_SYSTEM
 
@@ -154,17 +154,17 @@ int main(int argc, char** argv)
 #endif // ATAN
 #ifdef DS
     DSModel SM11;
-    SM11.setCamParams(origSize);
-    SM11.setIntrinsics(0.5648855, -0.27168128, cv::Vec2d(0, 0), cv::Matx22d(255, 0, 0, 255));
+    SM11.setCamParams(origSize); // 0.57542867, -0.21840474, 
+    SM11.setIntrinsics(0.570157085, -0.24504301, cv::Vec2d(0, 0), cv::Matx22d(264, 0, 0, 262));
     SM11.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.9238795, 0.3826834));
-    DSModel SM12;
+    DSModel SM12;   // 0.5648855, -0.27168128,
     SM12.setCamParams(origSize);
-    SM12.setIntrinsics(0.5648855, -0.27168128, cv::Vec2d(0, 0), cv::Matx22d(255, 0, 0, 255));
+    SM12.setIntrinsics(0.570157085, -0.24504301, cv::Vec2d(0, 0), cv::Matx22d(264, 0, 0, 262));
     SM12.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));
 
     SS.addNewCam(SM11);
     SS.addNewCam(SM12);
-    SS.createStereopair(0, 1, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
+    SS.createStereopair(10, 11, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
 #endif
 #ifdef FOUR_CAM_SYSTEM
     KBModel SM0;
@@ -198,7 +198,7 @@ int main(int argc, char** argv)
 // Create a stereosystem out of the previously created cameras (and target resolution). View direction set automatically 
     SS.prepareLUTs(); 
 
-    string path = "D:/Work/Coding/Repos/fisheye_stereo/data/1_Compar0.1m/"; //TODO: exctract from argument
+    string path = "D:/Work/Coding/Repos/fisheye_stereo/data/540p[ALLRIGHT]/1_Compar0.1m/"; //TODO: exctract from argument
     
     vector<Point> grid;                   // vectors of grid points
     vector<Point> gridDist;
@@ -240,7 +240,7 @@ int main(int argc, char** argv)
 
 		
         Mat combinedRemap(Size(newSize.width*2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
-        SS.getImage(0, SurroundSystem::RECTIFIED, right,left,  combinedRemap);
+        SS.getImage(5, SurroundSystem::RECTIFIED, right,left,  combinedRemap);
 
 		
         cv::imshow("disparity", combinedRemap);
