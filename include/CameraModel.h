@@ -25,6 +25,9 @@ public:	///* Parameters *///
 	cv::Vec3d position;
 	cv::Vec4d rotation;
 
+	cv::Vec2d centerOffset;				// Distortion center
+	cv::Matx22d stretchMatrix;
+
 public:	///* Data *///
 	double errorsum;
 

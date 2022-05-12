@@ -5,7 +5,7 @@ int SurroundSystem::addNewCam(CameraModel& readyModel)
 {
 	std::shared_ptr<CameraModel> sharedModel(&readyModel);
 	cameras.push_back(sharedModel);
-	dewarpers.push_back(std::shared_ptr<FisheyeDewarper>( new FisheyeDewarper(sharedModel) ));
+	//dewarpers.push_back(std::shared_ptr<FisheyeDewarper>( new FisheyeDewarper(sharedModel) ));
 
 	return cameras.size()-1;  // new camera index
 }
@@ -34,24 +34,27 @@ int SurroundSystem::createStereopair(int lCamIndex, int rCamIndex, cv::Size reco
 {
 	std::shared_ptr<CameraModel> left = cameras[lCamIndex];
 	std::shared_ptr<CameraModel> right = cameras[rCamIndex];
-	std::shared_ptr <FisheyeDewarper> leftDewarper = dewarpers[lCamIndex];
-	std::shared_ptr <FisheyeDewarper> rightDewarper = dewarpers[rCamIndex];
+	
+	std::shared_ptr <FisheyeDewarper> leftDewarper(new FisheyeDewarper(left));
+	dewarpers.push_back(leftDewarper);
+	std::shared_ptr <FisheyeDewarper> rightDewarper(new FisheyeDewarper(right));
+	dewarpers.push_back(rightDewarper);
 	// TODO: interpolation setter ?? 
 	leftDewarper->setSize(left->oldSize, reconstructedRes, 90);  // HACK: 90deg is an assumption
-	leftDewarper->setRpy(0, 0, 0);									// TODO: calc angles from position
 	rightDewarper->setSize(right->oldSize, reconstructedRes, 90);
-	rightDewarper->setRpy(0, 0, 0);
 
 	std::shared_ptr<Stereopair> SP( new Stereopair(left, leftDewarper, right, rightDewarper, reconstructedRes) );
 	SP->setOptimalDirecton();
 	SP->setStereoMethod(sm);
 	stereopairs.push_back(SP);
 
-
-
 	return stereopairs.size() - 1;
 }
 
+int SurroundSystem::getNumOfSP()
+{
+	return stereopairs.size();
+}
 
 void SurroundSystem::prepareLUTs()
 {
@@ -63,7 +66,8 @@ void SurroundSystem::prepareLUTs()
 
 // TODO: delete r and l - use constant image pointers instead?
 void SurroundSystem::getImage(int stereopairIndex, ImageType IT, cv::Mat& l, cv::Mat& r, cv::Mat& dst)
-{
+ {
+	// TODO: check if index is valid
 	cv::Size out_size = stereopairs[stereopairIndex]->outputSize;
 	cv::Mat leftImageRemapped(out_size, CV_8UC3, cv::Scalar(0, 0, 0));
 	cv::Mat rightImageRemapped(out_size, CV_8UC3, cv::Scalar(0, 0, 0));	// TODO: rework 'size' system
@@ -73,6 +77,8 @@ void SurroundSystem::getImage(int stereopairIndex, ImageType IT, cv::Mat& l, cv:
 		break;
 	case SurroundSystem::RECTIFIED:
 		stereopairs[stereopairIndex]->getRemapped(l, r, leftImageRemapped, rightImageRemapped) ;
+		leftImageRemapped = leftImageRemapped(cv::Rect(0, 0, out_size.width, out_size.height));
+		rightImageRemapped = rightImageRemapped(cv::Rect(0, 0, out_size.width, out_size.height));
 		cv::hconcat(leftImageRemapped, rightImageRemapped, dst);
 		return;
 	case SurroundSystem::DISPARITY:

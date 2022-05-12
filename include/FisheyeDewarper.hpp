@@ -62,6 +62,8 @@ public:		///* Settings *///
 	FisheyeDewarper(std::shared_ptr<CameraModel> model);
 	void setSize(cv::Size oldsize, cv::Size newsize, float wideFov);
 	void setRpy(float yaw, float pitch, float roll);
+	void setRpy(cv::Vec3d angles);
+	void setRpyRad(cv::Vec3d rad_angles);
 
 	std::vector<cv::Point> getBorder();
 
