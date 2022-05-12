@@ -1,5 +1,6 @@
 #include "models.h"
 
+// equidistant fisheye 
 cv::Point2d AtanModel::projectWorldToPixel(cv::Mat worldPoint)
 {
     float wx = worldPoint.at<float>(0);
@@ -13,9 +14,9 @@ cv::Point2d AtanModel::projectWorldToPixel(cv::Mat worldPoint)
     else if (wy < 0) ySign = -1;
     if (wz == 0) wz += 0.0001;
     //  fisheye focus
-    double xFocus = newSize.width / M_PI;
-    double yFocus = newSize.height / M_PI;
-    cv::Point projectionPoint(newSize.width / 2, newSize.height / 2);       //  initial value set to the image corner
+    double xFocus = oldSize.width / M_PI;       // TODO: check the logic begind this size
+    double yFocus = oldSize.height / M_PI;
+    cv::Point projectionPoint(oldSize.width / 2, oldSize.height / 2);       //  initial value set to the image corner
 
     //  calculate the point location on fisheye image in central coordinates
     projectionPoint.x = xSign * xFocus * atan(sqrt(wx * wx + wy * wy) / wz)
@@ -24,12 +25,15 @@ cv::Point2d AtanModel::projectWorldToPixel(cv::Mat worldPoint)
         / sqrt((wx * wx) / (wy * wy) + 1);
 
     //  convert to corner coordinates
-    toCorner(projectionPoint, newSize);
+    toCorner(projectionPoint, oldSize);
 
     return projectionPoint;
 }
 
-//cv::Mat AtanModel::projectPixelToWorld(cv::Point pixel)
-//{
-//
-//}
+
+
+void AtanModel::setIntrinsics( cv::Vec2d centerOffset, cv::Matx22d stretchMatrix)
+{
+    this->centerOffset = centerOffset;
+    this->stretchMatrix = stretchMatrix;
+}

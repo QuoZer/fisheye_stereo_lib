@@ -1,158 +1,59 @@
+
 #include "models.h"
 
 MeiModel::MeiModel()
 {
+    xi = 0;
+    p1 = 0;
+    p2 = 0;
+    k1 = 0;
     k2 = 0;
-    k3 = 0;
-    k4 = 0;
-    k5 = 0;
-    mu = 0;
-    mv = 0;
 }
 
-MeiModel::MeiModel(double k2, double k3, double k4, double k5, double mu, double mv)
+MeiModel::MeiModel(double xi, double p1, double p2, double k1, double k2, cv::Vec2d centerOffset, cv::Matx22d stretchMatrix)
 {
-    setIntrinsics(k2, k3, k4, k5, mu, mv);
+    setIntrinsics(xi, p1, p2, k1, k2, centerOffset, stretchMatrix);
 }
 
-void MeiModel::setIntrinsics(double k2, double k3, double k4, double k5, double mu, double mv)
+void MeiModel::setIntrinsics(double xi, double p1, double p2, double k1, double k2, cv::Vec2d centerOffset, cv::Matx22d stretchMatrix)
 {
+    this->xi = xi;
+    this->p1 = p1;
+    this->p2 = p2;
+    this->k1 = k1;
     this->k2 = k2;
-    this->k3 = k3;
-    this->k4 = k4;
-    this->k5 = k5;
-    this->mu = mu;
-    this->mv = mv;
+    this->stretchMatrix = stretchMatrix;
+    this->centerOffset = centerOffset; 
 }
 
 cv::Point2d MeiModel::projectWorldToPixel(cv::Mat worldPoint)
 {
-	double theta = acos(worldPoint.at<float>(2) / cv::norm(worldPoint));
-	double phi = atan2(worldPoint.at<float>(1), worldPoint.at<float>(0));
+	cv::normalize(worldPoint, worldPoint);
+	worldPoint.at<float>(2) += xi;
 
-	// k1 =1
-	double poly = theta + k2 * pow(theta, 3) + k3 * pow(theta, 5) + k4 * pow(theta, 7) + k5 * pow(theta, 9);
-	// cos(acos()) ????
-    cv::Point imgPixel = poly * cv::Point2d(cos(phi), sin(phi));
-    toCorner( imgPixel, oldSize);
-    return imgPixel;
-}
+	double x = worldPoint.at<float>(0) / worldPoint.at<float>(2);
+	double y = worldPoint.at<float>(1) / worldPoint.at<float>(2);
 
-void MeiModel::backprojectSymmetric(cv::Point pxl, double& theta, double& phi)
-{
-    double tol = 1e-10;
-    double p_u_norm = norm(pxl);
+    double _x, _y, _x2, _y2, _xy, _rho, rad_dist;
+    _x2 = x * x;
+    _y2 = y * y;
+    _xy = x * y;
+    _rho = _x2 + _y2;
+    rad_dist = k1 * _rho + k2 * _rho * _rho;
 
-    if (p_u_norm < 1e-10)
-    {
-        phi = 0.0;
-    }
-    else
-    {
-        phi = atan2(pxl.y, pxl.x);
-    }
+    _x = x * rad_dist + 2 * p1 * _xy + p2 * (_rho + 2 * _x2);
+    _y = y * rad_dist + 2 * p2 * _xy + p1 * (_rho + 2 * _y2);
 
-    int npow = 9;
-    if (k5 == 0.0)
-    {
-        npow -= 2;
-    }
-    if (k4 == 0.0)
-    {
-        npow -= 2;
-    }
-    if (k3 == 0.0)
-    {
-        npow -= 2;
-    }
-    if (k2 == 0.0)
-    {
-        npow -= 2;
-    }
+    x += _x;
+    y += _y;
 
-    cv::Mat coeffs(npow + 1, 1, CV_64F, double(0));
-    coeffs.at<double>(0) = -p_u_norm;
-    coeffs.at<double>(1) = 1.0;
+    cv::Point fypixel(stretchMatrix * cv::Vec2d(x, y) + centerOffset);        // technically could do toCorner's job, but I'll keep it simple for now
+    toCorner(fypixel, oldSize);
 
-    if (npow >= 3)
-    {
-        coeffs.at<double>(3) = k2;
-    }
-    if (npow >= 5)
-    {
-        coeffs.at<double>(5) = k3;
-    }
-    if (npow >= 7)
-    {
-        coeffs.at<double>(7) = k4;
-    }
-    if (npow >= 9)
-    {
-        coeffs.at<double>(9) = k5;
-    }
-
-    if (npow == 1)
-    {
-        theta = p_u_norm;
-    }
-    else
-    {
-        // Get eigenvalues of companion matrix corresponding to polynomial.
-        // Eigenvalues correspond to roots of polynomial.
-        cv::Mat A(npow, npow, CV_64F, double(0));
-        cv::setIdentity(A(cv::Rect(1, 0, npow - 1, npow - 1)));
-        A.col(npow - 1) = -coeffs(cv::Rect(0, 0, npow, 1)) / coeffs.at<double>(npow);
-
-        cv::PCA pt_pca(A, cv::Mat(), cv::PCA::DATA_AS_ROW, 0);
-        cv::Mat eigval = pt_pca.eigenvalues;
-
-        std::vector<double> thetas;
-        for (int i = 0; i < eigval.rows; ++i)
-        {
-            //if (fabs(eigval.at<double>(i).imag()) > tol)
-            //{
-            //    continue;
-            //}
-
-            //double t = eigval(i).real();
-            double t = 0;       // FIXME: this and everiyhing above should be rewritten
-            if (t < -tol)
-            {
-                continue;
-            }
-            else if (t < 0.0)
-            {
-                t = 0.0;
-            }
-
-            thetas.push_back(t);
-        }
-
-        if (thetas.empty())
-        {
-            theta = p_u_norm;
-        }
-        else
-        {
-            theta = *std::min_element(thetas.begin(), thetas.end());
-        }
-    }
+	return fypixel;
 }
 
 cv::Mat MeiModel::projectPixelToWorld(cv::Point pixel)
 {
-	//int u0 = 540; // size/2
-	//int v0 = 540; // size/2
-	//double invK11 = 1.0 / mu;
-	//double invK13 = -u0 / mu;
-	//double invK22 = 1.0 / mv;
-	//double invK23 = -v0 / mv;
-
-	double theta, phi;
-
-    backprojectSymmetric(pixel, theta, phi);
-	
-	double data[3] = { sin(theta) * cos(phi), sin(theta)* sin(phi), cos(theta)};
-	
-	return cv::Mat(1, 3, CV_64F, data);
+    return cv::Mat();
 }

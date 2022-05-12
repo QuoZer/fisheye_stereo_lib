@@ -1,5 +1,8 @@
 #include "FisheyeDewarper.hpp"
 
+#define CVPLOT_HEADER_ONLY
+#include <CvPlot/cvplot.h>
+
 FisheyeDewarper::FisheyeDewarper()
 {
     oldSize = cv::Size(0, 0);
@@ -30,6 +33,13 @@ void FisheyeDewarper::createMaps()
     map2 = cv::Mat(oldSize, CV_32FC1, float(0));
 }
 
+void FisheyeDewarper::setRpy(cv::Vec3d angles)
+{
+    this->yaw = angles[0] * PI / 180;
+    this->pitch = -angles[1] * PI / 180;
+    this->roll = angles[2] * PI / 180;
+}
+
 void FisheyeDewarper::setRpy(float yaw, float pitch, float roll)
 {
     this->yaw = yaw * PI / 180;
@@ -37,6 +47,13 @@ void FisheyeDewarper::setRpy(float yaw, float pitch, float roll)
     this->roll = roll * PI / 180;
 
     // TODO: fillMaps() after angle update. Or should it be handled manually? 
+}
+
+void FisheyeDewarper::setRpyRad(cv::Vec3d rad_angles)
+{
+    this->yaw =   rad_angles[0];
+    this->pitch = rad_angles[1];
+    this->roll =  rad_angles[2];
 }
 
 void FisheyeDewarper::setSize(cv::Size oldsize, cv::Size newsize, float wideFov)
@@ -85,7 +102,10 @@ void FisheyeDewarper::fillMaps()
     createMaps();
     frameBorder.clear();
     std::cout << "proceeding to fill maps " << std::endl;
+	
+    std::vector<float> points(newSize.width);
 
+    double max_xy = 0;
     for (int i = 0; i < newSize.width; i++)
     {
         for (int j = 0; j < newSize.height; j++)
@@ -104,6 +124,10 @@ void FisheyeDewarper::fillMaps()
                 ((i == 0 || i == newSize.width - 1) && j % 100 == 0))
             {
                 frameBorder.push_back(cv::Point(distPoint.y, distPoint.x));
+            }
+            // save the z value of each point
+            if (worldPoint.at<float>(0) > max_xy || worldPoint.at<float>(1) > max_xy) {
+				max_xy = std::max(worldPoint.at<float>(0), worldPoint.at<float>(1));
             }
 
             //map1.at<float>(distPoint.x, distPoint.y) =  j;
@@ -145,6 +169,6 @@ int FisheyeDewarper::loadMaps(std::string prefix)
 cv::Mat FisheyeDewarper::dewarpImage(cv::Mat inputImage)
 {
     cv::Mat remapped(newSize, CV_8UC3, cv::Scalar(0, 0, 0));
-    cv::remap(inputImage, remapped, map1, map2, cv::INTER_CUBIC, cv::BORDER_CONSTANT);
+    cv::remap(inputImage, remapped, map1, map2, cv::INTER_NEAREST, cv::BORDER_CONSTANT);
     return remapped;
 }
