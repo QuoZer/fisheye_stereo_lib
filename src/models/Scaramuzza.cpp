@@ -49,12 +49,10 @@ cv::Mat ScaramuzzaModel::projectPixelToWorld(cv::Point pixel)
     return cameraCoords;
 }
 
-void ScaramuzzaModel::setIntrinsics(std::initializer_list<double> coeffs, 
-	cv::Vec2d centerOffset, cv::Matx22d stretchMatrix, double scaleFactor)
+void ScaramuzzaModel::setIntrinsics(ScaraParams sp)
 {
-    this->scara_polynom.assign(coeffs.begin(), coeffs.end());       // treats both values as pointers 
-
-    this->centerOffset = centerOffset;
-    this->stretchMatrix = stretchMatrix;
-    this->lambda = scaleFactor;
+    this->scara_polynom = sp.scara_polynom;       // treats both values as pointers 
+    this->centerOffset = sp.centerOffset;
+    this->stretchMatrix = sp.stretchMatrix;
+    this->lambda = sp.lambda;
 }

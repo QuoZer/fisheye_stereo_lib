@@ -23,7 +23,7 @@ int SurroundSystem::addNewCam(CameraModel& readyModel)
 //		return ScaramuzzaModel();
 //	case MEI:
 //		return MeiModel();
-//	case KB:
+//	case KBModel:
 //		break;
 //	default:
 //		break;
