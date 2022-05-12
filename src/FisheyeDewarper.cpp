@@ -111,13 +111,36 @@ void FisheyeDewarper::fillMaps()
             map1.at<float>(i, j) = distPoint.y;
             map2.at<float>(i, j) = distPoint.x;
         }
-        if (i % 100 == 0) std::cout << "Collumn N" << i << std::endl;
+        //if (i % 100 == 0) std::cout << "Collumn N" << i << std::endl;
     }
-    std::cout << "Avg. error: " << cameraModel->errorsum / (newSize.area()) << std::endl;
-
+    //std::cout << "Avg. error: " << cameraModel->errorsum / (newSize.area()) << std::endl;
 
 }
 
+void FisheyeDewarper::saveMaps(std::string prefix)
+{
+    std::vector<cv::Mat> channels = {map1, map2};
+    cv::Mat full_map;
+
+    cv::merge(channels, full_map);
+
+    cv::imwrite(prefix + "_map.png", full_map);
+}
+
+int FisheyeDewarper::loadMaps(std::string prefix)
+{
+    std::vector<cv::Mat> channels;
+    cv::Mat combined_map = cv::imread(prefix + "_map.png");
+    if (combined_map.empty())
+    {
+        return 0;
+    }
+    cv::split(combined_map, channels);
+
+    this->map1 = channels[0];
+    this->map2 = channels[1];
+    return 1;
+}
 
 cv::Mat FisheyeDewarper::dewarpImage(cv::Mat inputImage)
 {

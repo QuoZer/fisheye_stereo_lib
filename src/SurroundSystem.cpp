@@ -74,12 +74,28 @@ int SurroundSystem::createStereopair(const CameraModel& leftModel, const CameraM
 	return stereopairs.size() - 1;
 }
 
-
-void SurroundSystem::prepareLUTs()
+int SurroundSystem::loadLUTs()
 {
-	for each (auto SP in stereopairs)
+	int index = 0;
+	int result = 1;
+	for (auto SP : stereopairs)
 	{
+		index++;
+		result *= SP->loadMaps(std::to_string(index));
+	}
+
+	return result;
+}
+
+void SurroundSystem::prepareLUTs(bool saveResults)
+{
+	int index = 0;
+	for (auto SP : stereopairs)
+	{
+		index++;
 		SP->fillMaps();
+		if (saveResults)
+			SP->saveMaps(std::to_string(index));
 	}
 }
 

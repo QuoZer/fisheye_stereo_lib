@@ -9,8 +9,6 @@
 	* 3D optical axis defined by positions?
  -   
 
-
-
 */
 
 
@@ -46,8 +44,9 @@ public:
 	//CameraModel SurroundSystem::getCameraModel(CameraModels);
 	int createStereopair(const CameraModel& leftModel, const CameraModel& rightModel, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod);
 	int createStereopair(int lCamIndex, int rCamIndex, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod);
-
-	void prepareLUTs();
+	
+	int loadLUTs();
+	void prepareLUTs(bool saveResults);
 
 	void getImage(int stereopairIndex, ImageType IT, cv::Mat& l, cv::Mat& r, cv::Mat& dst);
 

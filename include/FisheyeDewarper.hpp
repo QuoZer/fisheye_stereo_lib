@@ -38,7 +38,7 @@ private:	///* Data *///
 	/* Intrinsics */
 	std::vector <double> scara_polynom;		// Scaramuzza model coefficients
 	std::vector <double> mei_polynom;		// Mei model coefficients
-	cv::Vec2d centerOffset;				// Distortion center
+	cv::Vec2d   centerOffset;				// Distortion center
 	cv::Matx22d stretchMatrix;			// Stretch matrix
 	double lambda;						// Scale factor 
 	/* Structures */
@@ -68,6 +68,8 @@ public:		///* Settings *///
 public:		/*  */
 	void fillMaps();
 	cv::Mat dewarpImage(cv::Mat inputImage);
+	void saveMaps(std::string prefix);
+	int loadMaps(std::string prefix);
 	
 };
 

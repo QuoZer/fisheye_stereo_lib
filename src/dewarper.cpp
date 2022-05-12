@@ -216,7 +216,8 @@ int main(int argc, char** argv)
 // Create a stereosystem out of the previously created cameras (and target resolution). View direction set automatically 
     int SPindex = SS.createStereopair(0, 1, newSize, cv::Vec3d(0,0,0), StereoMethod::SGBM);
     //front.setDirection()
-    SS.prepareLUTs(); 
+    if (SS.loadLUTs == 0)
+        {SS.prepareLUTs(true); }
     
 
     vector<Point> grid;                   // vectors of grid points
