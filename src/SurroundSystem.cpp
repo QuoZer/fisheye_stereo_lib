@@ -52,6 +52,28 @@ int SurroundSystem::createStereopair(int lCamIndex, int rCamIndex, cv::Size reco
 	return stereopairs.size() - 1;
 }
 
+int SurroundSystem::createStereopair(const CameraModel& leftModel, const CameraModel& rightModel, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod sm)
+{
+	int lCamIndex = addNewCam(leftModel);
+	int rCamIndex = addNewCam(rightModel);
+	std::shared_ptr<CameraModel> left = cameras[lCamIndex];
+	std::shared_ptr<CameraModel> right = cameras[rCamIndex];
+	std::shared_ptr<FisheyeDewarper> leftDewarper = dewarpers[lCamIndex];
+	std::shared_ptr<FisheyeDewarper> rightDewarper = dewarpers[rCamIndex];
+	// TODO: interpolation setter ?? 
+	leftDewarper->setSize(left->oldSize, reconstructedRes, 90);  // HACK: 90deg is an assumption
+	leftDewarper->setRpy(0, 0, 0);									
+	rightDewarper->setSize(right->oldSize, reconstructedRes, 90);
+	rightDewarper->setRpy(0, 0, 0);
+
+	std::shared_ptr<Stereopair> SP( new Stereopair(left, leftDewarper, right, rightDewarper, reconstructedRes) );
+	SP->setOptimalDirecton();
+	SP->setStereoMethod(sm);
+	stereopairs.push_back(SP);
+
+	return stereopairs.size() - 1;
+}
+
 
 void SurroundSystem::prepareLUTs()
 {

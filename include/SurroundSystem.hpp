@@ -34,11 +34,6 @@ public:
 		DEPTH
 	};
 
-	//const int SCARAMUZZA = -1;
-	//const int PINHOLE = 00;
-	//const int SCARAMUZZA = 10;
-	//const int ATAN = 20;
-	//const int MEI = 30;
 
 private: //* Containers *//
 	std::vector<std::shared_ptr<FisheyeDewarper>> dewarpers; 
@@ -49,6 +44,7 @@ public:
 	int addNewCam(CameraModel& readyModel);
 
 	//CameraModel SurroundSystem::getCameraModel(CameraModels);
+	int createStereopair(const CameraModel& leftModel, const CameraModel& rightModel, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod);
 	int createStereopair(int lCamIndex, int rCamIndex, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod);
 
 	void prepareLUTs();
