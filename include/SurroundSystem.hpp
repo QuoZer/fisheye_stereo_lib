@@ -9,8 +9,6 @@
 	* 3D optical axis defined by positions?
  -   
 
-
-
 */
 
 
@@ -34,11 +32,6 @@ public:
 		DEPTH
 	};
 
-	//const int SCARAMUZZA = -1;
-	//const int PINHOLE = 00;
-	//const int SCARAMUZZA = 10;
-	//const int ATAN = 20;
-	//const int MEI = 30;
 
 private: //* Containers *//
 	std::vector<std::shared_ptr<FisheyeDewarper>> dewarpers; 
@@ -49,9 +42,11 @@ public:
 	int addNewCam(CameraModel& readyModel);
 
 	//CameraModel SurroundSystem::getCameraModel(CameraModels);
+	int createStereopair(CameraModel& leftModel, CameraModel& rightModel, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod);
 	int createStereopair(int lCamIndex, int rCamIndex, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod);
-
-	void prepareLUTs();
+	
+	//int loadLUTs();
+	void prepareLUTs(bool saveResults);
 
 	int getNumOfSP();
 	void getImage(int stereopairIndex, ImageType IT, cv::Mat& l, cv::Mat& r, cv::Mat& dst);

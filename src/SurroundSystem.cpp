@@ -51,22 +51,64 @@ int SurroundSystem::createStereopair(int lCamIndex, int rCamIndex, cv::Size reco
 	return stereopairs.size() - 1;
 }
 
+int SurroundSystem::createStereopair(CameraModel& leftModel, CameraModel& rightModel, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod sm)
+{
+	int lCamIndex = addNewCam(leftModel);
+	int rCamIndex = addNewCam(rightModel);
+	std::shared_ptr<CameraModel> left = cameras[lCamIndex];
+	std::shared_ptr<CameraModel> right = cameras[rCamIndex];
+	std::shared_ptr<FisheyeDewarper> leftDewarper = dewarpers[lCamIndex];
+	std::shared_ptr<FisheyeDewarper> rightDewarper = dewarpers[rCamIndex];
+	// TODO: interpolation setter ?? 
+	leftDewarper->setSize(left->oldSize, reconstructedRes, 90);  // HACK: 90deg is an assumption
+	leftDewarper->setRpy(0, 0, 0);									
+	rightDewarper->setSize(right->oldSize, reconstructedRes, 90);
+	rightDewarper->setRpy(0, 0, 0);
+
+	std::shared_ptr<Stereopair> SP( new Stereopair(left, leftDewarper, right, rightDewarper, reconstructedRes) );
+	SP->setOptimalDirecton();
+	SP->setStereoMethod(sm);
+	stereopairs.push_back(SP);
+
+	return stereopairs.size() - 1;
+}
+
+//int SurroundSystem::loadLUTs()
+//{
+//	int index = 0;
+//	int result = 1;
+//	for (auto SP : stereopairs)
+//	{
+//		index++;
+//		result *= SP->loadMaps(std::to_string(index));
+//	}
+//
+//	return result;
+//}
+//
+void SurroundSystem::prepareLUTs(bool saveResults)
+{
+	int index = 0;
+	for (auto SP : stereopairs)
+	{
+		index++;
+		SP->fillMaps();
+		//if (saveResults)
+		//	SP->saveMaps(std::to_string(index));
+	}
+}
+
 int SurroundSystem::getNumOfSP()
 {
 	return stereopairs.size();
 }
 
-void SurroundSystem::prepareLUTs()
-{
-	for (auto SP : stereopairs)
-	{
-		SP->fillMaps();
-	}
-}
-
 // TODO: delete r and l - use constant image pointers instead?
 void SurroundSystem::getImage(int stereopairIndex, ImageType IT, cv::Mat& l, cv::Mat& r, cv::Mat& dst)
  {
+	if (stereopairIndex >= stereopairs.size())
+		return;
+	
 	// TODO: check if index is valid
 	cv::Size out_size = stereopairs[stereopairIndex]->outputSize;
 	cv::Mat leftImageRemapped(out_size, CV_8UC3, cv::Scalar(0, 0, 0));

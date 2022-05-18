@@ -22,18 +22,6 @@ void KBModel::setIntrinsics(std::initializer_list<double> coeffs,
 
 cv::Point2d KBModel::projectWorldToPixel(cv::Mat worldPoint)
 {
-    /*
-    double r = sqrt(worldPoint.at<float>(1) * worldPoint.at<float>(1) +
-        worldPoint.at<float>(0) * worldPoint.at<float>(0));
-    double theta = atan2(r, worldPoint.at<float>(2));
-
-    double phi = acos(worldPoint.at<float>(0) / r);
-
-    // k1 =1
-    double poly = theta + kb_polynom[0] * pow(theta, 3) + kb_polynom[1] * pow(theta, 5) +
-                          kb_polynom[2] * pow(theta, 7) + kb_polynom[3] * pow(theta, 9);
-    // cos(acos()) ????
-    */
 
     double theta = acos(worldPoint.at<float>(2) / cv::norm(worldPoint, cv::NormTypes::NORM_L2));
     double phi = atan2(worldPoint.at<float>(1), worldPoint.at<float>(0));

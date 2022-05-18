@@ -26,13 +26,14 @@ enum CAM_MODEL
     KB,
     ATAN
 };
-#define MEI
-#define SCARA
-#define KB
-#define ATAN
-#define REAL_ATAN
-#define DS
+//#define MEI
+//#define SCARA
+//#define KB
+//#define ATAN
+//#define REAL_ATAN
+//#define DS
 //#define FOUR_CAM_SYSTEM
+#define REAL_CAM1
 
 int px_counter = 0;
 
@@ -75,7 +76,7 @@ int main(int argc, char** argv)
 
 
     Size origSize(1080, 1080);       //imread(image_list[0], -1).size();
-    Size newSize(540, 540);        // origSize * 1;            // determines the size of the output image
+    Size newSize(1080, 1080);        // origSize * 1;            // determines the size of the output image
     
 // Create the stereo system object
     SurroundSystem SS; 
@@ -195,8 +196,30 @@ int main(int argc, char** argv)
 	
 #endif
 
+#ifdef REAL_CAM1
+    Size camsize(1600, 1200);       //imread(image_list[0], -1).size();
+    Size phsize(540, 540);
+    newSize = phsize;
+    ScaramuzzaModel RCam;
+    RCam.setIntrinsics({ 564.5179, -4.5057 * pow(10, -4), -5.2636 * pow(10, -7), -3.0719 * pow(10, -10) }, 0.022, cv::Vec2d(536, 894), cv::Matx22d(1, -0.0077, -0.0013, 1));
+    RCam.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.9238795, 0.3826834));  //135^o
+    RCam.setCamParams(camsize);
+    ScaramuzzaModel RCam2;
+    RCam2.setIntrinsics({ 564.5179, -4.5057 * pow(10, -4), -5.2636 * pow(10, -7), -3.0719 * pow(10, -10) }, 0.022, cv::Vec2d(536, 894), cv::Matx22d(1, -0.0077, -0.0013, 1));
+    RCam2.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, -0.9238795, 0.3826834));  //-135^o
+    RCam2.setCamParams(camsize);
+
+    SS.addNewCam(RCam);
+    SS.addNewCam(RCam2);
+#endif // REAL_CAM1
+
+
 // Create a stereosystem out of the previously created cameras (and target resolution). View direction set automatically 
-    SS.prepareLUTs(); 
+    int SPindex = SS.createStereopair(0, 1, phsize, cv::Vec3d(0,0,0), StereoMethod::SGBM);
+    //front.setDirection()
+    //if (SS.loadLUTs() == 0)
+    //    {SS.prepareLUTs(true); }
+    
 
     string path = "D:/Work/Coding/Repos/fisheye_stereo/data/540p[ALLRIGHT]/1_Compar0.1m/"; //TODO: exctract from argument
     
@@ -207,9 +230,11 @@ int main(int argc, char** argv)
     bool recalcFlag = true;
     while(true)         //  iterate through images       
     {
-        Mat img = imread(image_list[index], -1);
-        Mat right = img(Rect(0, 0, 1080, 1080)).clone();                // FIXME: WRONG L/R
-        Mat left = img(Rect(1080, 0, 1080, 1080)).clone();
+        Mat img = imread("Image1.png", -1);
+        Mat right = img.clone();                // FIXME: WRONG L/R
+        Mat left = img.clone();
+
+        SS.prepareLUTs(false);
 
         if (recalcFlag){
             cout << "Maps ready" << endl;
@@ -240,7 +265,7 @@ int main(int argc, char** argv)
 
 		
         Mat combinedRemap(Size(newSize.width*2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
-        SS.getImage(5, SurroundSystem::RECTIFIED, right,left,  combinedRemap);
+        SS.getImage(0, SurroundSystem::RECTIFIED, right,left,  combinedRemap);
 
 		
         cv::imshow("disparity", combinedRemap);
