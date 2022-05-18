@@ -36,6 +36,7 @@ cv::Point2d KBModel::projectWorldToPixel(cv::Mat worldPoint)
     return fypixel;
 }
 
+void KBModel::backprojectSymmetric(cv::Point pxl, double& theta, double& phi)
 {
     double tol = 1e-10;
     double p_u_norm = norm(pxl);

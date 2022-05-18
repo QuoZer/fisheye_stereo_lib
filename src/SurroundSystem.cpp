@@ -51,7 +51,7 @@ int SurroundSystem::createStereopair(int lCamIndex, int rCamIndex, cv::Size reco
 	return stereopairs.size() - 1;
 }
 
-int SurroundSystem::createStereopair(const CameraModel& leftModel, const CameraModel& rightModel, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod sm)
+int SurroundSystem::createStereopair(CameraModel& leftModel, CameraModel& rightModel, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod sm)
 {
 	int lCamIndex = addNewCam(leftModel);
 	int rCamIndex = addNewCam(rightModel);
@@ -73,19 +73,19 @@ int SurroundSystem::createStereopair(const CameraModel& leftModel, const CameraM
 	return stereopairs.size() - 1;
 }
 
-int SurroundSystem::loadLUTs()
-{
-	int index = 0;
-	int result = 1;
-	for (auto SP : stereopairs)
-	{
-		index++;
-		result *= SP->loadMaps(std::to_string(index));
-	}
-
-	return result;
-}
-
+//int SurroundSystem::loadLUTs()
+//{
+//	int index = 0;
+//	int result = 1;
+//	for (auto SP : stereopairs)
+//	{
+//		index++;
+//		result *= SP->loadMaps(std::to_string(index));
+//	}
+//
+//	return result;
+//}
+//
 void SurroundSystem::prepareLUTs(bool saveResults)
 {
 	int index = 0;
@@ -93,14 +93,22 @@ void SurroundSystem::prepareLUTs(bool saveResults)
 	{
 		index++;
 		SP->fillMaps();
-		if (saveResults)
-			SP->saveMaps(std::to_string(index));
+		//if (saveResults)
+		//	SP->saveMaps(std::to_string(index));
 	}
+}
+
+int SurroundSystem::getNumOfSP()
+{
+	return stereopairs.size();
 }
 
 // TODO: delete r and l - use constant image pointers instead?
 void SurroundSystem::getImage(int stereopairIndex, ImageType IT, cv::Mat& l, cv::Mat& r, cv::Mat& dst)
  {
+	if (stereopairIndex >= stereopairs.size())
+		return;
+	
 	// TODO: check if index is valid
 	cv::Size out_size = stereopairs[stereopairIndex]->outputSize;
 	cv::Mat leftImageRemapped(out_size, CV_8UC3, cv::Scalar(0, 0, 0));

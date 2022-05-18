@@ -42,10 +42,10 @@ public:
 	int addNewCam(CameraModel& readyModel);
 
 	//CameraModel SurroundSystem::getCameraModel(CameraModels);
-	int createStereopair(const CameraModel& leftModel, const CameraModel& rightModel, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod);
+	int createStereopair(CameraModel& leftModel, CameraModel& rightModel, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod);
 	int createStereopair(int lCamIndex, int rCamIndex, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod);
 	
-	int loadLUTs();
+	//int loadLUTs();
 	void prepareLUTs(bool saveResults);
 
 	int getNumOfSP();
