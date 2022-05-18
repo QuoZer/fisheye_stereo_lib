@@ -1,6 +1,6 @@
 #pragma once
 #include "FisheyeDewarper.hpp"
-#include "Stereopair.hpp"
+#include "StereoPair.hpp"
 
 /*
  - User adds cameras with their relative positions

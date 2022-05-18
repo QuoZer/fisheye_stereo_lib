@@ -81,7 +81,7 @@ public:
 
 	cv::Point2d projectWorldToPixel(cv::Mat worldPoint);
 	cv::Mat projectPixelToWorld(cv::Point pixel);
-	void KBModel::backprojectSymmetric(cv::Point pxl, double& theta, double& phi);
+	void backprojectSymmetric(cv::Point pxl, double& theta, double& phi);
 };
 
 

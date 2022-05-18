@@ -58,7 +58,7 @@ int SurroundSystem::getNumOfSP()
 
 void SurroundSystem::prepareLUTs()
 {
-	for each (auto SP in stereopairs)
+	for (auto SP : stereopairs)
 	{
 		SP->fillMaps();
 	}

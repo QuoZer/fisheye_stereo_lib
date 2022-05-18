@@ -1,4 +1,5 @@
-#include "..\include\StereoPair.hpp"
+
+#include "StereoPair.hpp"
 
 Stereopair::Stereopair(std::shared_ptr<CameraModel> lCam, std::shared_ptr<FisheyeDewarper> lDWarp, 
                        std::shared_ptr<CameraModel> rCam, std::shared_ptr<FisheyeDewarper> rDWarp,
@@ -67,7 +68,8 @@ void Stereopair::setStereoMethod(StereoMethod sm)
         matcher = cv::StereoBM::create();
         break;
     case SGBM:
-        matcher = cv::StereoSGBM::create();
+        //matcher = cv::StereoSGBM::create();
+        
         break;
     default:
         break;
@@ -124,7 +126,7 @@ int Stereopair::getDisparity(cv::OutputArray& dist, cv::InputArray& leftImage, c
     cv::Mat leftImageRemapped(leftCamera->newSize, CV_8UC3, cv::Scalar(0, 0, 0));
     cv::Mat rightImageRemapped(rightCamera->newSize, CV_8UC3, cv::Scalar(0, 0, 0));
     //
-    getRemapped(leftImage.getMat(), rightImage.getMat(), leftImageRemapped, rightImageRemapped);
+    //getRemapped(leftImage.getMat(), rightImage.getMat(), leftImageRemapped, rightImageRemapped);
     matcher->compute(leftImageRemapped, rightImageRemapped, dist);
 
     return 0;

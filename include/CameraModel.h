@@ -4,7 +4,6 @@
 #include "opencv2/imgproc.hpp"
 #include <iostream>
 #include <vector>
-#include <numbers>
 #include <math.h>
 #include "Intrinsics.hpp"
 
@@ -50,11 +49,11 @@ public:		///* Settings *///
 	\brief Takes a 3D point in camera coordinates and projects it into fisheye image coordinates
 	
 	*/
-	virtual cv::Point2d projectWorldToPixel(cv::Mat worldPoint) = NULL; 		// idk it doesnt want to return null
+	virtual cv::Point2d projectWorldToPixel(cv::Mat worldPoint) = 0; 		// idk it doesnt want to return null
 	/*
 	\brief Takes a point in image (central coordinates) and projects it into camera coordinates
 
 	*/
-	virtual cv::Mat projectPixelToWorld(cv::Point pixel) = NULL;
+	virtual cv::Mat projectPixelToWorld(cv::Point pixel) = 0;
 
 };
