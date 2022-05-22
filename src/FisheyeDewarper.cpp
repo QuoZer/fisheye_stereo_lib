@@ -1,7 +1,7 @@
 #include "FisheyeDewarper.hpp"
 
 #define CVPLOT_HEADER_ONLY
-#include <CvPlot/cvplot.h>
+//#include <CvPlot/cvplot.h>
 
 FisheyeDewarper::FisheyeDewarper()
 {
