@@ -25,9 +25,9 @@ cv::Point2d DSModel::projectWorldToPixel(cv::Mat worldPoint)
     //  calculate the point location on fisheye image in central coordinates
     double u = wx / znam;
     double v = wy / znam;
-    cv::Point fypixel(stretchMatrix * cv::Vec2d(u, v) + centerOffset);
+    cv::Point fypixel(stretchMatrix * cv::Vec2d(u, -v) + centerOffset);
     //  convert to corner coordinates
-    toCorner(fypixel, oldSize);
+    //toCorner(fypixel, oldSize);
 
     return fypixel;
 }

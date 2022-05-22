@@ -11,8 +11,8 @@ FisheyeDewarper::FisheyeDewarper()
     pitch = 0;
     yaw = 0;
     errorsum = 0;
-    xFov = 90.0;
-    yFov = 90.0; // idk
+    xFov = 60.0;
+    yFov = 6.0; // idk
     cameraModel = nullptr;
     pinhole = nullptr;
 
@@ -101,7 +101,6 @@ void FisheyeDewarper::fillMaps()
 {
     createMaps();
     frameBorder.clear();
-    std::cout << "proceeding to fill maps " << std::endl;
 	
     std::vector<float> points(newSize.width);
 
@@ -130,8 +129,6 @@ void FisheyeDewarper::fillMaps()
 				max_xy = std::max(worldPoint.at<float>(0), worldPoint.at<float>(1));
             }
 
-            //map1.at<float>(distPoint.x, distPoint.y) =  j;
-            //map2.at<float>(distPoint.x, distPoint.y) =  i;
             map1.at<float>(i, j) = distPoint.y;
             map2.at<float>(i, j) = distPoint.x;
         }

@@ -16,18 +16,19 @@ cv::Point2d AtanModel::projectWorldToPixel(cv::Mat worldPoint)
     //  fisheye focus
     double xFocus = oldSize.width / M_PI;       // TODO: check the logic begind this size
     double yFocus = oldSize.height / M_PI;
-    cv::Point projectionPoint(oldSize.width / 2, oldSize.height / 2);       //  initial value set to the image corner
-
+	
     //  calculate the point location on fisheye image in central coordinates
-    projectionPoint.x = xSign * xFocus * atan(sqrt(wx * wx + wy * wy) / wz)
+    double wu = xSign * xFocus * atan(sqrt(wx * wx + wy * wy) / wz)
         / sqrt((wy * wy) / (wx * wx) + 1);
-    projectionPoint.y = ySign * yFocus * atan(sqrt(wx * wx + wy * wy) / wz)
+    double wv = ySign * yFocus * atan(sqrt(wx * wx + wy * wy) / wz)
         / sqrt((wx * wx) / (wy * wy) + 1);
 
-    //  convert to corner coordinates
-    toCorner(projectionPoint, oldSize);
+    cv::Point fypixel(stretchMatrix * cv::Vec2d(wu, -wv) + centerOffset);	
 
-    return projectionPoint;
+    //  convert to corner coordinates
+    //toCorner(fypixel, oldSize);
+
+    return fypixel;
 }
 
 

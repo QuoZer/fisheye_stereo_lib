@@ -3,6 +3,7 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/calib3d.hpp"
 #include "opencv2/highgui.hpp"
+#include <opencv2/videoio.hpp>
 #include <vector>
 #include <iostream>
 #include <string>
@@ -33,7 +34,7 @@ enum CAM_MODEL
 //#define REAL_ATAN
 //#define DS
 //#define FOUR_CAM_SYSTEM
-#define REAL_CAM1
+#define REAL_CAM2
 
 int px_counter = 0;
 
@@ -195,46 +196,197 @@ int main(int argc, char** argv)
     SS.createStereopair(3, 2, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
 	
 #endif
-
+    // 2048p source
 #ifdef REAL_CAM1
-    Size camsize(1600, 1200);       //imread(image_list[0], -1).size();
+    Size camsize(1536, 2048 );       //imread(image_list[0], -1).size();
     Size phsize(540, 540);
     newSize = phsize;
-    ScaramuzzaModel RCam;
-    RCam.setIntrinsics({ 564.5179, -4.5057 * pow(10, -4), -5.2636 * pow(10, -7), -3.0719 * pow(10, -10) }, 0.022, cv::Vec2d(536, 894), cv::Matx22d(1, -0.0077, -0.0013, 1));
-    RCam.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.9238795, 0.3826834));  //135^o
-    RCam.setCamParams(camsize);
-    ScaramuzzaModel RCam2;
-    RCam2.setIntrinsics({ 564.5179, -4.5057 * pow(10, -4), -5.2636 * pow(10, -7), -3.0719 * pow(10, -10) }, 0.022, cv::Vec2d(536, 894), cv::Matx22d(1, -0.0077, -0.0013, 1));
-    RCam2.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, -0.9238795, 0.3826834));  //-135^o
-    RCam2.setCamParams(camsize);
+    KBModel KB1;
+    KB1.setIntrinsics({ -2.039 * pow(10, -2), 2.71859 * pow(10, -2), -1.0898 * pow(10, -2), 1.4595 * pow(10, -3) },  cv::Vec2d(725, 1119), cv::Matx22d(636, 0,0, 635));
+    KB1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));  //135^o
+    KB1.setCamParams(camsize);
+    KBModel KB2;
+    KB2.setIntrinsics({ 2.2201 * pow(10, -2), -2.6259 * pow(10, -2), 1.3064 * pow(10, -2), -2.2604 * pow(10, -3) }, cv::Vec2d(720, 989), cv::Matx22d(643, 0, 0, 643));
+    KB2.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, -0.3826834, 0.9238795));  //-135^o
+    KB2.setCamParams(camsize);
+	
+    ScaramuzzaModel SM1;
+    SM1.setIntrinsics({ 638.649, -6.5217 * pow(10, -4), 3.0186 * pow(10, -7), -2.7871 * pow(10, -10) }, 0.022, cv::Vec2d(733, 1119), cv::Matx22d(1, 0, 0, 1));
+    SM1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));  //135^o
+    SM1.setCamParams(camsize);
+    ScaramuzzaModel SM2;
+    SM2.setIntrinsics({ 648.7136, -5.4315 * pow(10, -4), 1.1746 * pow(10, -7), -1.9214 * pow(10, -10) }, 0.022, cv::Vec2d(725, 990), cv::Matx22d(1, 0, 0, 1));
+    SM2.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, -0.3826834, 0.9238795));  //-135^o
+    SM2.setCamParams(camsize);
+	
+    AtanModel AM1;
+    AM1.setCamParams(origSize);
+    AM1.setIntrinsics(cv::Vec2d(733, 1119), cv::Matx22d(1, 0, 0, 1));
+    AM1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));
+    AtanModel AM2;
+    AM2.setCamParams(origSize);
+    AM2.setIntrinsics(cv::Vec2d(733, 1119), cv::Matx22d(1, 0, 0, 1));
+    AM2.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, -0.3826834, 0.9238795));
+	
+    RealAtanModel RAM1;
+    RAM1.setCamParams(origSize);
+    RAM1.setIntrinsics(cv::Vec2d(733, 1119), cv::Matx22d(1, 0, 0, 1));
+    RAM1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));
+    RealAtanModel RAM2;
+    RAM2.setCamParams(origSize);
+    RAM2.setIntrinsics(cv::Vec2d(733, 1119), cv::Matx22d(1, 0, 0, 1));
+    RAM2.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, -0.3826834, 0.9238795));
 
-    SS.addNewCam(RCam);
-    SS.addNewCam(RCam2);
+    SS.addNewCam(KB1);
+    SS.addNewCam(KB2);
+
+    SS.addNewCam(SM1);
+    SS.addNewCam(SM2);
+
+    SS.addNewCam(AM1);
+    SS.addNewCam(AM2);
+
+    SS.addNewCam(RAM1);
+    SS.addNewCam(RAM2);
+
+    SS.createStereopair(0, 1, phsize, cv::Vec3d(0,0,0), StereoMethod::SGBM);
+    SS.createStereopair(2, 3, phsize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
+    SS.createStereopair(4, 5, phsize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
+    SS.createStereopair(6, 7, phsize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
 #endif // REAL_CAM1
 
+#ifdef REAL_CAM2  //1080p
+    Size camsize(1080, 1920);       //imread(image_list[0], -1).size();
+    Size phsize(540, 540);
+    newSize = phsize;
+    KBModel KB1;
+    KB1.setIntrinsics({ 3.778 * pow(10, -4), 4.483 * pow(10, -5), 5.799 * pow(10, -3), -2.410 * pow(10, -3) }, cv::Vec2d(498, 982), cv::Matx22d(642, 0, 0, 639));
+    KB1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));  //135^o
+    KB1.setCamParams(camsize);
+    KBModel KB2;
+    KB2.setIntrinsics({ 3.804 * pow(10, -3), 1.890 * pow(10, -3), -1.198 * pow(10, -3), 1.223 * pow(10, -4) }, cv::Vec2d(495, 836), cv::Matx22d(640, 0, 0, 641));
+    KB2.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, -0.3826834, 0.9238795));  //-135^o
+    KB2.setCamParams(camsize);
 
+    ScaramuzzaModel SM1;
+    SM1.setIntrinsics({ 647.641, -6.461 * pow(10, -4), 3.307 * pow(10, -7), -3.019 * pow(10, -10) }, 0.022, cv::Vec2d(500, 986), cv::Matx22d(1, 0, 0, 1));
+    SM1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));  //135^o
+    SM1.setCamParams(camsize);
+    ScaramuzzaModel SM2;
+    SM2.setIntrinsics({ 648.7136, -5.4315 * pow(10, -4), 1.1746 * pow(10, -7), -1.9214 * pow(10, -10) }, 0.022, cv::Vec2d(500, 920), cv::Matx22d(1, 0, 0, 1));
+    //SM2.setIntrinsics({ 640.3594, -5.5485 * pow(10, -4), 1.2147 * pow(10, -7), -1.8215 * pow(10, -10) }, 0.022, cv::Vec2d(500, 986), cv::Matx22d(1, 0, 0, 1));
+    SM2.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, -0.3826834, 0.9238795));  //-135^o
+    SM2.setCamParams(camsize);
+
+    MeiModel MM1;
+    MM1.setIntrinsics(2.404, 4.76583 * pow(10, -4), 2.9705 * pow(10, -4), -0.11506, 3.0141, cv::Vec2d( 488,980), cv::Matx22d(2185, 0, 0, 2176));
+    MM1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));
+    MM1.setCamParams(camsize);
+    MeiModel MM2;
+    //MM2.setIntrinsics(2.404, 4.76583 * pow(10, -4), 2.9705 * pow(10, -4), -0.11506, 3.0141, cv::Vec2d(488, 980), cv::Matx22d(2185, 0, 0, 2176));
+    MM2.setIntrinsics(1.678, 4.5441 * pow(10, -4), -5.1062 * pow(10, -3), -0.1254, 0.2757, cv::Vec2d( 495, 848), cv::Matx22d(1721, 0, 0, 1722));
+    MM2.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, -0.3826834, 0.9238795));
+    MM2.setCamParams(camsize);
+	
+    DSModel DSM1;
+    DSM1.setCamParams(camsize); // 0.57542867, -0.21840474, 
+    DSM1.setIntrinsics(-0.0706193, 0.55671, cv::Vec2d(498, 980), cv::Matx22d(580, 0, 0, 580));
+    DSM1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));
+    DSModel DSM2;   // 0.5648855, -0.27168128,
+    DSM2.setCamParams(camsize);
+    DSM2.setIntrinsics(-0.03815, 0.624726, cv::Vec2d(486, 849), cv::Matx22d(604, 0, 0, 601));
+    DSM2.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, -0.3826834, 0.9238795));
+
+
+    AtanModel AM1;
+    AM1.setCamParams(camsize);
+    AM1.setIntrinsics(cv::Vec2d(733, 1119), cv::Matx22d(1, 0, 0, 1));
+    AM1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));
+    AtanModel AM2;
+    AM2.setCamParams(camsize);
+    AM2.setIntrinsics(cv::Vec2d(733, 1119), cv::Matx22d(1, 0, 0, 1));
+    AM2.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, -0.3826834, 0.9238795));
+
+    RealAtanModel RAM1;
+    RAM1.setCamParams(camsize);
+    RAM1.setIntrinsics(cv::Vec2d(733, 1119), cv::Matx22d(1, 0, 0, 1));
+    RAM1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));
+    RealAtanModel RAM2;
+    RAM2.setCamParams(camsize);
+    RAM2.setIntrinsics(cv::Vec2d(733, 1119), cv::Matx22d(1, 0, 0, 1));
+    RAM2.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, -0.3826834, 0.9238795));
+
+    SS.addNewCam(KB1);
+    SS.addNewCam(KB2);
+
+    SS.addNewCam(SM1);
+    SS.addNewCam(SM2);
+
+    SS.addNewCam(MM1);
+    SS.addNewCam(MM2);
+	
+    SS.addNewCam(DSM1);
+    SS.addNewCam(DSM2);
+	
+    SS.addNewCam(AM1);
+    SS.addNewCam(AM2);
+
+    SS.addNewCam(RAM1);
+    SS.addNewCam(RAM2);
+	
+    SS.createStereopair(0, 1, phsize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
+    SS.createStereopair(2, 3, phsize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
+    SS.createStereopair(4, 5, phsize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
+    SS.createStereopair(6, 7, phsize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
+    SS.createStereopair(8, 9, phsize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
+    SS.createStereopair(10, 11, phsize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
+#endif // REAL_CAM2
 // Create a stereosystem out of the previously created cameras (and target resolution). View direction set automatically 
-    int SPindex = SS.createStereopair(0, 1, phsize, cv::Vec3d(0,0,0), StereoMethod::SGBM);
     //front.setDirection()
     //if (SS.loadLUTs() == 0)
     //    {SS.prepareLUTs(true); }
-    
+	
+     cv::VideoCapture camera0(cv::CAP_DSHOW);
+     camera0.set(cv::CAP_PROP_FOURCC ,VideoWriter::fourcc('M', 'J', 'P', 'G'));
+     camera0.set(cv::CAP_PROP_FRAME_WIDTH, 1920);
+     camera0.set(cv::CAP_PROP_FRAME_HEIGHT, 1080);
+     camera0.set(cv::CAP_PROP_FPS, 15);
+	
+     cv::VideoCapture camera1(1+cv::CAP_DSHOW);
+     camera1.set(cv::CAP_PROP_FOURCC, VideoWriter::fourcc('M', 'J', 'P', 'G'));
+     camera1.set(cv::CAP_PROP_FRAME_WIDTH, 1920);
+     camera1.set(cv::CAP_PROP_FRAME_HEIGHT, 1080);
+     camera1.set(cv::CAP_PROP_FPS, 15);
+	
+     if (!camera0.isOpened() || !camera1.isOpened()) {
+         cerr << "ERROR! Unable to open camera\n";
+         return -1;
+     } 
 
-    string path = "D:/Work/Coding/Repos/fisheye_stereo/data/540p[ALLRIGHT]/1_Compar0.1m/"; //TODO: exctract from argument
+    string path = "D:/Work/Coding/Repos/fisheye_stereo/data/1080p[REAL]"; 
+    string read_path = path + "/calib_imgs/";
+    string write_path = path + "/3_Compar0.072m/";
+	
     
     vector<Point> grid;                   // vectors of grid points
     vector<Point> gridDist;
     vector<Point> r_gridDist;
     int index = 0;
     bool recalcFlag = true;
+    SS.prepareLUTs(false);
+	
+	Mat img0, img1;
     while(true)         //  iterate through images       
     {
-        Mat img = imread("Image1.png", -1);
-        Mat right = img.clone();                // FIXME: WRONG L/R
-        Mat left = img.clone();
-
-        SS.prepareLUTs(false);
+		camera0.read(img1);
+        camera1.read(img0);
+		
+        //Mat img0 = imread(basepath + "Left/image" + std::to_string(index) + ".png", -1);
+        //Mat img1 = imread(basepath + "Right/image" + std::to_string(index) + ".png", -1);
+		
+        Mat left = img0.clone();
+        Mat right = img1.clone();     
+		ShowManyImages("Origs", 2, left, right);
 
         if (recalcFlag){
             cout << "Maps ready" << endl;
@@ -265,16 +417,21 @@ int main(int argc, char** argv)
 
 		
         Mat combinedRemap(Size(newSize.width*2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
-        SS.getImage(0, SurroundSystem::RECTIFIED, right,left,  combinedRemap);
-
+        SS.getImage(0, SurroundSystem::RECTIFIED, left, right,  combinedRemap);
 		
         cv::imshow("disparity", combinedRemap);
 
-        char key = (char)waitKey(0);
+        char key = (char)waitKey(15);
         switch (key){
         case 'r':
             index += 0;
             cout << "Reload" << endl;
+            break;
+        case 'o':
+            cout << "Saving originals" << endl;
+            imwrite(write_path + "l_image" + std::to_string(index) + ".png", left);
+            imwrite(write_path + "r_image" + std::to_string(index) + ".png", right);
+            //index++;
             break;
         case 'q':
             index--;
@@ -289,7 +446,7 @@ int main(int argc, char** argv)
             // depthSwitcher = true;
             break;
         case 's': {
-            saveWithAllModels(path, SS, right,left,  index);
+            saveWithAllModels(write_path, SS, left, right,  index);
             //savePano(SS, combinedRemap1, 2, 0);
             //savePano(SS, combinedRemap2, 2, 1);
             //savePano(SS, combinedRemap3, 2, 2);
@@ -302,6 +459,6 @@ int main(int argc, char** argv)
             break;
         }
         
-        if (index == n_img || index < 0) index = 0;
+        //if (index == n_img || index < 0) index = 0;
     }
 }

@@ -31,7 +31,7 @@ cv::Point2d ScaramuzzaModel::projectWorldToPixel(cv::Mat worldPoint)
     double u = X / lambda;
     double v = Y / lambda;
 
-    cv::Point fypixel(stretchMatrix * cv::Vec2d(u, v) + centerOffset);        // technically could do toCorner's job, but I'll keep it simple for now
+    cv::Point fypixel(stretchMatrix * cv::Vec2d(u, -v) + centerOffset);        // technically could do toCorner's job, but I'll keep it simple for now
     //toCorner(fypixel, oldSize);
     return fypixel;
 }

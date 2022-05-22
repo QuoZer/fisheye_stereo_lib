@@ -66,7 +66,7 @@ int SurroundSystem::createStereopair(CameraModel& leftModel, CameraModel& rightM
 	rightDewarper->setRpy(0, 0, 0);
 
 	std::shared_ptr<Stereopair> SP( new Stereopair(left, leftDewarper, right, rightDewarper, reconstructedRes) );
-	SP->setOptimalDirecton();
+	//SP->setOptimalDirecton();
 	SP->setStereoMethod(sm);
 	stereopairs.push_back(SP);
 
@@ -92,6 +92,7 @@ void SurroundSystem::prepareLUTs(bool saveResults)
 	for (auto SP : stereopairs)
 	{
 		index++;
+		std::cout << "Prepping SP" << index << std::endl;
 		SP->fillMaps();
 		//if (saveResults)
 		//	SP->saveMaps(std::to_string(index));

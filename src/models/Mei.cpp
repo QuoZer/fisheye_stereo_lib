@@ -47,8 +47,8 @@ cv::Point2d MeiModel::projectWorldToPixel(cv::Mat worldPoint)
     x += _x;
     y += _y;
 
-    cv::Point fypixel(stretchMatrix * cv::Vec2d(x, y) + centerOffset);        // technically could do toCorner's job, but I'll keep it simple for now
-    toCorner(fypixel, oldSize);
+    cv::Point fypixel(stretchMatrix * cv::Vec2d(x, -y) + centerOffset);        // technically could do toCorner's job, but I'll keep it simple for now
+    //toCorner(fypixel, oldSize);
 
 	return fypixel;
 }

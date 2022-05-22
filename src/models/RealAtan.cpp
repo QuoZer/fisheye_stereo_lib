@@ -19,8 +19,8 @@ cv::Point2d RealAtanModel::projectWorldToPixel(cv::Mat worldPoint)
     double u = xSign * xFocus * (phi) / sqrt((Y * Y) / (X * X) + 1);
     double v = ySign * yFocus * (phi) / sqrt((X * X) / (Y * Y) + 1);
 
-    cv::Point fypixel(stretchMatrix * cv::Vec2d(u, v) + centerOffset);        // technically could do toCorner's job, but I'll keep it simple for now
-    toCorner(fypixel, oldSize);
+    cv::Point fypixel(stretchMatrix * cv::Vec2d(u,  -v) + centerOffset);        // technically could do toCorner's job, but I'll keep it simple for now
+    //toCorner(fypixel, oldSize);
     return fypixel;
 }
 
