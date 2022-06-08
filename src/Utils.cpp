@@ -135,8 +135,8 @@ void ShowManyImages(string title, int nArgs, ...) {
     va_end(args);
 }
 
-//std::map<int, string> types = { {0, "MEI"}, {1, "SCARA"}, {2, "KB"}, {3, "ATAN"}, {4, "REAL_ATAN"}};
-std::map<int, string> types = { {2, "MEI"}, {3, "DS"}, {1, "SCARA"}, {0, "KB"}, {4, "ATAN"}, {5, "REAL_ATAN"} };
+std::map<int, string> types = { {0, "MEI"}, {1, "SCARA"}, {2, "KB"}, {3, "ATAN"}, {4, "REAL_ATAN"}};
+//std::map<int, string> types = { {2, "MEI"}, {3, "DS"}, {1, "SCARA"}, {0, "KB"}, {4, "ATAN"}, {5, "REAL_ATAN"} };
 
 void saveWithAllModels(string base_folder, SurroundSystem& SS, cv::Mat& left, cv::Mat& right, int index)
 {

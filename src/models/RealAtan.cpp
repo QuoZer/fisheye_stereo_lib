@@ -13,9 +13,10 @@ cv::Point2d RealAtanModel::projectWorldToPixel(cv::Mat worldPoint)
     if (Y == 0) Y += 0.0001;
     else if (Y < 0) ySign = -1;
     double phi = atan2(sqrt(X * X + Y * Y), Z);
+    double fisheye_fov = M_PI * (185 / 180);
 
-    double xFocus = 1 * oldSize.width / M_PI;
-    double yFocus = 1 * oldSize.height / M_PI;
+    double xFocus = 1 * oldSize.width / fisheye_fov;
+    double yFocus = 1 * oldSize.height / fisheye_fov;
     double u = xSign * xFocus * (phi) / sqrt((Y * Y) / (X * X) + 1);
     double v = ySign * yFocus * (phi) / sqrt((X * X) / (Y * Y) + 1);
 

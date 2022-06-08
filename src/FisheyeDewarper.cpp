@@ -11,8 +11,8 @@ FisheyeDewarper::FisheyeDewarper()
     pitch = 0;
     yaw = 0;
     errorsum = 0;
-    xFov = 60.0;
-    yFov = 6.0; // idk
+    xFov = 90.0;
+    yFov = 90.0; // idk
     cameraModel = nullptr;
     pinhole = nullptr;
 

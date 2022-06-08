@@ -14,8 +14,9 @@ cv::Point2d AtanModel::projectWorldToPixel(cv::Mat worldPoint)
     else if (wy < 0) ySign = -1;
     if (wz == 0) wz += 0.0001;
     //  fisheye focus
-    double xFocus = oldSize.width / M_PI;       // TODO: check the logic begind this size
-    double yFocus = oldSize.height / M_PI;
+	double fisheye_fov = M_PI * (185/180);
+    double xFocus = oldSize.width / fisheye_fov;       // TODO: check the logic begind this size
+    double yFocus = oldSize.height / fisheye_fov;
 	
     //  calculate the point location on fisheye image in central coordinates
     double wu = xSign * xFocus * atan(sqrt(wx * wx + wy * wy) / wz)
