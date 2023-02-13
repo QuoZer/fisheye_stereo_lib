@@ -13,6 +13,8 @@ include_directories( ${OpenCV_INCLUDE_DIRS}
 )
 
 set(DEWARPER_SRCS
+	example/test.cpp
+
 	src/dewarper.cpp
 	src/FisheyeDewarper.cpp
 	src/SurroundSystem.cpp
@@ -37,8 +39,10 @@ set(DEWARPER_SRCS
 
 add_executable( dewarper ${DEWARPER_SRCS})
 target_include_directories(dewarper PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-
 target_link_libraries( dewarper ${OpenCV_LIBS})
+
+add_executable( test ${DEWARPER_SRCS})
+target_include_directories(test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries( test ${OpenCV_LIBS})
 
 add_compile_options(/D_USE_MATH_DEFINES)
