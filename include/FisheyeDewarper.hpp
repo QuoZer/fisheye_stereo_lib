@@ -8,7 +8,7 @@
 #include <vector>
 #include <memory>
 #include <math.h>
-#include "models.h"
+#include "models.hpp"
 
 /// <summary>
 /// Camera model agnostic class for removing distortions in RoI. Usually operated by the SurroundSystem class

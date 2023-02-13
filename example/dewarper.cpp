@@ -11,7 +11,7 @@
 #include <map>
 #include <cstdarg>
 #include "SurroundSystem.hpp"
-#include "Utils.h"
+#include "Utils.hpp"
 
 // -w=9 -h=6 -pt=chessboard ..\..\data\4_Compar0.1m\stereo_list.xml
 

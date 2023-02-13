@@ -1,5 +1,5 @@
 #pragma once 
-#include "CameraModel.h"
+#include "CameraModel.hpp"
 
 /*
 	The file for defining camera models. Write or #include yours here
