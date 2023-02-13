@@ -1,5 +1,9 @@
 #include "models.hpp"
 
+ScaramuzzaModel::ScaramuzzaModel()
+{
+    setModelName("Sc");
+}
 
 cv::Point2d ScaramuzzaModel::projectWorldToPixel(cv::Mat worldPoint)
 {

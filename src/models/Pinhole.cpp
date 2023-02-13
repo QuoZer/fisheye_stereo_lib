@@ -48,4 +48,5 @@ void PinholeModel::setIntrinsics(cv::Size newsize, float wideFov)
 PinholeModel::PinholeModel()
 {
     errorsum = 0;
+    setModelName("Ph");
 }

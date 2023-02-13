@@ -24,6 +24,11 @@ void CameraModel::setExtrinsics(cv::Vec3d pos, cv::Vec4d rot)
 	rotation = rot;
 }
 
+void CameraModel::setModelName(std::string modelName)
+{
+	this->modelName = modelName;
+}
+
 void CameraModel::setCamParams(cv::Size origImageSize)
 {
 	oldSize = origImageSize;

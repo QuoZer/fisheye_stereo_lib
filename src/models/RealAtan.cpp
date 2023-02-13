@@ -1,6 +1,11 @@
 
 #include "models.hpp"
 
+RealAtanModel::RealAtanModel()
+{
+    setModelName("RTn");
+}
+
 cv::Point2d RealAtanModel::projectWorldToPixel(cv::Mat worldPoint)
 {
     double X = worldPoint.at<float>(0);

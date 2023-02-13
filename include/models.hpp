@@ -38,6 +38,7 @@ public:	///* Projection functions *///
 	cv::Mat projectPixelToWorld(cv::Point pixel);
 
 public:
+	ScaramuzzaModel();
 	/// <summary>
 	/// Specify camera intrinsic parameters according to the model. Can be obtained from e.g. MATLAB calibration toolbox. 
 	/// </summary>
@@ -47,6 +48,7 @@ public:
 	/// <param name="stretchMatrix"> 2x2 Stretch matrix </param>
 	void setIntrinsics(std::initializer_list<double> coeffs, double lambda,
 		cv::Vec2d centerOffset, cv::Matx22d stretchMatrix);
+
 };
 
 /// <summary>
@@ -65,6 +67,7 @@ public:	///* Projection functions *///
 	cv::Mat projectPixelToWorld(cv::Point pixel) { return cv::Mat(oldSize, CV_8UC3, cv::Scalar(0, 0, 0)); }
 	
 public:
+	AtanModel();
 	void setIntrinsics(cv::Vec2d centerOffset, cv::Matx22d stretchMatrix);
 
 };
@@ -81,6 +84,7 @@ public:	///* Projection functions *///
 	cv::Mat projectPixelToWorld(cv::Point pixel) { return cv::Mat(oldSize, CV_8UC3, cv::Scalar(0, 0, 0)); }
 
 public:
+	RealAtanModel();
 	void setIntrinsics(cv::Vec2d centerOffset, cv::Matx22d stretchMatrix);
 
 };

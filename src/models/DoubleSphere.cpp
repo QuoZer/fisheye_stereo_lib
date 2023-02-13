@@ -4,12 +4,14 @@
 DSModel::DSModel(double alpha, double dzeta, cv::Vec2d centerOffset, cv::Matx22d stretchMatrix)
 {
     setIntrinsics( alpha,  dzeta,  centerOffset,  stretchMatrix);
+    setModelName("DS");
 }
 
 DSModel::DSModel()
 {
     alpha = 0;
     dzeta = 0;
+    setModelName("DS");
 }
 
 // equidistant fisheye 

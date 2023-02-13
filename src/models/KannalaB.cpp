@@ -3,7 +3,7 @@
 
 KBModel::KBModel()
 {
-
+    setModelName("KB");
 }
 
 KBModel::KBModel(std::initializer_list<double> coeffs,

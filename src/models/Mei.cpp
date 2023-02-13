@@ -8,6 +8,7 @@ MeiModel::MeiModel()
     p2 = 0;
     k1 = 0;
     k2 = 0;
+    setModelName("Mei");
 }
 
 MeiModel::MeiModel(double xi, double p1, double p2, double k1, double k2, cv::Vec2d centerOffset, cv::Matx22d stretchMatrix)
