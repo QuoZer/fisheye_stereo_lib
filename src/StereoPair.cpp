@@ -68,7 +68,7 @@ void Stereopair::setStereoMethod(StereoMethod sm)
         matcher = cv::StereoBM::create();
         break;
     case SGBM:
-        //matcher = cv::StereoSGBM::create();
+        matcher = cv::StereoSGBM::create();
         
         break;
     default:
@@ -92,7 +92,7 @@ void Stereopair::setOptimalDirecton()
     cv::Vec3d l_rpy = quatToRpy(leftCamera->rotation);
     cv::Vec3d r_rpy = quatToRpy(rightCamera->rotation);
 
-    // 2D case
+    // 2D case for now 
     double l_z = l_rpy[0];  //yaw
 	double r_z = r_rpy[0];
 
@@ -107,7 +107,7 @@ void Stereopair::setOptimalDirecton()
 	l_rpy[0] = (l_z - dir_z);
 	r_rpy[0] = (r_z - dir_z);	
 
-    leftDewarper->setRpyRad(l_rpy);   // FIXME:  wrong 
+    leftDewarper->setRpyRad(l_rpy);   // TODO: FIXME:  wrong 
     rightDewarper->setRpyRad(r_rpy);
 }
 
@@ -125,8 +125,10 @@ int Stereopair::getDisparity(cv::OutputArray& dist, cv::InputArray& leftImage, c
     // static ?? 
     cv::Mat leftImageRemapped(leftCamera->newSize, CV_8UC3, cv::Scalar(0, 0, 0));
     cv::Mat rightImageRemapped(rightCamera->newSize, CV_8UC3, cv::Scalar(0, 0, 0));
-    //
+    
     //getRemapped(leftImage.getMat(), rightImage.getMat(), leftImageRemapped, rightImageRemapped);
+    
+    // TODO: check if the matcher is ready before computing
     matcher->compute(leftImageRemapped, rightImageRemapped, dist);
 
     return 0;

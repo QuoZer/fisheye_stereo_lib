@@ -49,7 +49,7 @@ private:	///* Data *///
 private:	///* Internal functions *///
 
 	/// <summary>
-	/// computes look-up table for the camera
+	/// create empty maps or clear old ones
 	/// </summary>
 	void createMaps();
 

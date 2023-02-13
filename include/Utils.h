@@ -17,8 +17,10 @@ void cropUglyScreenshots(const std::vector<std::string>& list);
 // beta = brightness, alpha = contrast
 void changeContrastAndBrightness(cv::Mat& image, double alpha, int beta);
 
+// show a matrix of n images
 void ShowManyImages(std::string title, int nArgs, ...);
 
+// take two images, dewarp them with all the configured models and save the resultig images
 void saveWithAllModels(std::string base_folder, SurroundSystem& SS, cv::Mat& left, cv::Mat& right, int index);
 
 void savePano(std::string base_folder, SurroundSystem& SS, cv::Mat& combinedRemap, int type_i, int sp_index);

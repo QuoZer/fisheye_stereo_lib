@@ -173,8 +173,6 @@ void savePano(string base_folder, SurroundSystem& SS, cv::Mat& combinedRemap, in
     cout << "Saving images..." << types[type_i] << " | " << i << "/" << SS.getNumOfSP() << endl;
     imwrite(l_name, left_rem);
     imwrite(r_name, right_rem);
-    
-	
 }
 
 bool readStringList(const string& filename, vector<string>& l)

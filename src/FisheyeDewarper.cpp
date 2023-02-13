@@ -31,6 +31,7 @@ void FisheyeDewarper::createMaps()
 {
     map1 = cv::Mat(oldSize, CV_32FC1, float(0));
     map2 = cv::Mat(oldSize, CV_32FC1, float(0));
+    // could be moved to the constructor 
 }
 
 void FisheyeDewarper::setRpy(cv::Vec3d angles)
@@ -45,8 +46,6 @@ void FisheyeDewarper::setRpy(float yaw, float pitch, float roll)
     this->yaw = yaw * PI / 180;
     this->pitch = -pitch * PI / 180;
     this->roll = roll * PI / 180;
-
-    // TODO: fillMaps() after angle update. Or should it be handled manually? 
 }
 
 void FisheyeDewarper::setRpyRad(cv::Vec3d rad_angles)
@@ -80,7 +79,7 @@ cv::Mat FisheyeDewarper::rotatePoint(cv::Mat worldPoint)
     cv::Mat rotY(cv::Matx33f(cos(roll), -sin(roll), 0,
         sin(roll), cos(roll), 0,
         0, 0, 1));
-    return worldPoint * rotY * rotZ * rotX;         // calib3d/utils  proposes this order
+    return worldPoint * rotY * rotZ * rotX;         // opencv calib3d/utils  proposes this order
 }
 
 // converting corner coordinates to the center ones
@@ -99,6 +98,7 @@ void FisheyeDewarper::toCorner(cv::Point& centerPixel, cv::Size imagesize)
 
 void FisheyeDewarper::fillMaps()
 {
+    // initialize 
     createMaps();
     frameBorder.clear();
 	
@@ -109,9 +109,13 @@ void FisheyeDewarper::fillMaps()
     {
         for (int j = 0; j < newSize.height; j++)
         {
+            // projecting image pixel to 3D
             cv::Mat worldPoint = pinhole->projectPixelToWorld(cv::Point(i, j));
+            // rotating in desired direction
             worldPoint = rotatePoint(worldPoint);
+            // finding where it lands on the fisheye image
             cv::Point distPoint = cameraModel->projectWorldToPixel(worldPoint);
+
             if (distPoint.x > oldSize.width - 1 || distPoint.x < 0 ||
                 distPoint.y > oldSize.height - 1 || distPoint.y < 0)
             {
@@ -124,7 +128,7 @@ void FisheyeDewarper::fillMaps()
             {
                 frameBorder.push_back(cv::Point(distPoint.y, distPoint.x));
             }
-            // save the z value of each point
+            // save the z value of each point (not needed anymore)
             if (worldPoint.at<float>(0) > max_xy || worldPoint.at<float>(1) > max_xy) {
 				max_xy = std::max(worldPoint.at<float>(0), worldPoint.at<float>(1));
             }
@@ -165,7 +169,9 @@ int FisheyeDewarper::loadMaps(std::string prefix)
 
 cv::Mat FisheyeDewarper::dewarpImage(cv::Mat inputImage)
 {
+    // init output
     cv::Mat remapped(newSize, CV_8UC3, cv::Scalar(0, 0, 0));
+    // interpolation methods didn't seem to affect much
     cv::remap(inputImage, remapped, map1, map2, cv::INTER_NEAREST, cv::BORDER_CONSTANT);
     return remapped;
 }
