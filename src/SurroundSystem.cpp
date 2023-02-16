@@ -1,6 +1,11 @@
 #include "SurroundSystem.hpp"
 
 
+SurroundSystem::SurroundSystem(const char* systemName)
+{
+	this->systemName = systemName; 
+}
+
 int SurroundSystem::addNewCam(CameraModel& readyModel)
 {
 	std::shared_ptr<CameraModel> sharedModel(&readyModel);
@@ -10,25 +15,6 @@ int SurroundSystem::addNewCam(CameraModel& readyModel)
 	return cameras.size()-1;  // new camera index
 }
 
-//CameraModel SurroundSystem::getCameraModel(CameraModels cm)
-//{
-//	// FIXME: antipattern
-//	switch (cm)
-//	{
-//	case PINHOLE:
-//		return PinholeModel();
-//	case ATAN:
-//		return AtanModel();
-//	case SCARAMUZZA:
-//		return ScaramuzzaModel();
-//	case MEI:
-//		return MeiModel();
-//	case KBModel:
-//		break;
-//	default:
-//		break;
-//	}
-//}
 
 int SurroundSystem::createStereopair(int lCamIndex, int rCamIndex, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod sm)
 {
@@ -73,32 +59,37 @@ int SurroundSystem::createStereopair(CameraModel& leftModel, CameraModel& rightM
 	return stereopairs.size() - 1;
 }
 
-//int SurroundSystem::loadLUTs()
-//{
-//	int index = 0;
-//	int result = 1;
-//	for (auto SP : stereopairs)
-//	{
-//		index++;
-//		result *= SP->loadMaps(std::to_string(index));
-//	}
-//
-//	return result;
-//}
-//
+int SurroundSystem::loadLUTs(const char* name)	// we don't actually need a name, since SS already has one
+{
+	int index = 0;
+	int result = 1;
+	for (auto SP : stereopairs)
+	{
+		SP->loadMaps(index, name);
+		index++;
+	}
+
+	return result;
+}
+
 
 
 void SurroundSystem::prepareLUTs(bool saveResults)
 {
 	int index = 0;
+	
+	std::vector<cv::Mat> all_maps;
+
 	for (auto SP : stereopairs)
 	{
-		index++;
 		std::cout << "Prepping SP" << index << std::endl;
 		SP->fillMaps();
-		//if (saveResults)
-		//	SP->saveMaps(std::to_string(index));
+		if (saveResults) {
+			SP->saveMaps(index, this->systemName);
+		}
+		index++;
 	}
+	
 }
 
 int SurroundSystem::getNumOfSP()

@@ -135,9 +135,23 @@ public:		/*  */
 	/// <returns> Undistorted image </returns>
 	cv::Mat dewarpImage(cv::Mat inputImage);
 
+	/// <summary>
+	/// Returns look-up tables from the associated camera
+	/// </summary>
+	/// <returns></returns>
+	std::vector<cv::Mat> getMaps();
+
+	/// <summary>
+	/// Loads prepared maps into the dewarper
+	/// </summary>
+	/// <param name="index"></param>
+	/// <param name="mapX"></param>
+	/// <param name="mapY"></param>
+	/// <returns></returns>
+	void setMaps(cv::Mat mapX, cv::Mat mapY);
+
 	//TODO:
 	void saveMaps(std::string prefix);
-	int loadMaps(std::string prefix);
 	
 };
 

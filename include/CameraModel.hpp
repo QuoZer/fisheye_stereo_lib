@@ -8,9 +8,6 @@
 #include "Intrinsics.hpp"
 
 
-/* TODO: 
-*  setResolution 
-*/
 
 /// <summary>
 /// A parent class for all the camera models. Inherit overriding virtual functions 'projectWorldToPixel' and 'projectPixelToWorld'
@@ -23,7 +20,7 @@ public:	///* Parameters *///
 	float yFov;							
 	cv::Size oldSize;					
 	cv::Size newSize;					
-	int modelID;
+	std::string modelName;
 	// TODO: some kind of position storage 
 	cv::Vec3d position;
 	cv::Vec4d rotation;
@@ -67,6 +64,12 @@ public:		///* Settings *///
 	/// <param name="pos"> Position in xyz coordinates </param>
 	/// <param name="rot"> Orientation in quaternion </param>
 	void setExtrinsics(cv::Vec3d pos, cv::Vec4d rot);
+
+	/// <summary>
+	/// Sets an identifier for the camera 
+	/// </summary>
+	/// <param name="modelName"> Camera name </param>
+	void setModelName(std::string modelName);
 
 	// trying to use one agnostic function to set parameters no matter the parameters
 	void setIntrinsics(DistortionParams params);

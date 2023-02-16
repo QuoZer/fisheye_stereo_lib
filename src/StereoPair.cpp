@@ -59,6 +59,46 @@ void Stereopair::fillMaps()
 	rightDewarper->fillMaps();
 }
 
+std::vector<cv::Mat> Stereopair::getMaps()
+{
+    std::vector<cv::Mat> leftMap = leftDewarper->getMaps();
+    std::vector<cv::Mat> rightMap = rightDewarper->getMaps();
+    // merging the vectors
+    leftMap.insert(leftMap.end(), rightMap.begin(), rightMap.end());
+
+    return leftMap;
+}
+
+void Stereopair::saveMaps(int index, std::string& systemId)
+{
+    std::vector<cv::Mat> leftMap = leftDewarper->getMaps();
+    std::vector<cv::Mat> rightMap = rightDewarper->getMaps();
+
+    leftMap.insert(leftMap.end(), rightMap.begin(), rightMap.end());
+
+    cv::Mat full_map;
+    cv::merge(leftMap, full_map);
+
+    std::string name = systemId + std::to_string(index) + "_" + leftCamera->modelName + rightCamera->modelName + ".png";
+
+    cv::imwrite(name, full_map);
+
+}
+
+void Stereopair::loadMaps(int index, const char* systemId)
+{
+    std::string filename = systemId + std::to_string(index) + "_" + leftCamera->modelName + rightCamera->modelName + ".png";
+
+    cv::Mat full_map;
+    full_map = cv::imread(filename, cv::IMREAD_UNCHANGED);    // TODO: safety checks
+
+    std::vector<cv::Mat> fourChannels;
+    cv::split(full_map, fourChannels);
+
+    leftDewarper->setMaps(fourChannels[0], fourChannels[1]);
+    rightDewarper->setMaps(fourChannels[2], fourChannels[3]);
+}
+
 void Stereopair::setStereoMethod(StereoMethod sm)
 {
 

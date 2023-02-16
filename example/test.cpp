@@ -35,7 +35,7 @@ int main(int argc, char** argv)
     Size newSize(540, 540);          // determines the size of the output image
     
 /*  1. Create the stereo system object    */ 
-    SurroundSystem SS; 
+    SurroundSystem SS("svs");
 
 /*  2. Describe your system. */
 
@@ -70,7 +70,10 @@ int main(int argc, char** argv)
     SS.createStereopair(2, 3, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
 
 /*  3. Compute look-up tables  */
-    SS.prepareLUTs(false);
+    //SS.prepareLUTs(true);
+
+/*  3.1 OR load already filled ones  */
+    SS.loadLUTs("svs");
 	
 /*  4. Get images  */
     Mat combinedRemap1(Size(newSize.width*2, newSize.height), CV_8UC3, Scalar(0, 0, 0));

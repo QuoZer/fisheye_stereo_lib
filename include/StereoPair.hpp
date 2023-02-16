@@ -58,12 +58,35 @@ public:
 	Stereopair(std::shared_ptr<CameraModel> lCam, std::shared_ptr<FisheyeDewarper> lDWarp,
 		std::shared_ptr<CameraModel> rCam, std::shared_ptr<FisheyeDewarper> rDWarp, cv::Size outSize, StereoMethod sm);
 	
+	/// <summary>
+	/// Translates quaternion values into Euler angles
+	/// </summary>
+	/// <param name="quaternion"></param>
+	/// <returns></returns>
 	cv::Vec3d quatToRpy(cv::Vec4d quaternion);
 
 	/// <summary>
 	/// Compute look-up-tables for the attached cameras
 	/// </summary>
 	void fillMaps();
+
+	/// <summary>
+	/// Save maps of the associated cameras
+	/// </summary>
+	void saveMaps(int index, std::string& systemId);
+
+	/// <summary>
+	/// Loads the maps of the associated cameras
+	/// </summary>
+	/// <param name="index"></param>
+	/// <param name="systemId"></param>
+	void loadMaps(int index, const char* systemId);
+
+	/// <summary>
+	/// Returns look-up tables for the associated cameras
+	/// </summary>
+	/// <returns></returns>
+	std::vector<cv::Mat> getMaps();
 	
 	/// <summary>
 	/// Get undistorted images for stereo

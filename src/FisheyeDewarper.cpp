@@ -142,6 +142,12 @@ void FisheyeDewarper::fillMaps()
 
 }
 
+std::vector<cv::Mat> FisheyeDewarper::getMaps()
+{
+    std::vector<cv::Mat> channels = { map1, map2 };
+    return channels;
+}
+
 void FisheyeDewarper::saveMaps(std::string prefix)
 {
     std::vector<cv::Mat> channels = {map1, map2};
@@ -149,22 +155,13 @@ void FisheyeDewarper::saveMaps(std::string prefix)
 
     cv::merge(channels, full_map);
 
-    cv::imwrite(prefix + "_map.png", full_map);
+    cv::imwrite(prefix + cameraModel->modelName + "_map.png", full_map);
 }
 
-int FisheyeDewarper::loadMaps(std::string prefix)
+void FisheyeDewarper::setMaps(cv::Mat mapX, cv::Mat mapY)
 {
-    std::vector<cv::Mat> channels;
-    cv::Mat combined_map = cv::imread(prefix + "_map.png");
-    if (combined_map.empty())
-    {
-        return 0;
-    }
-    cv::split(combined_map, channels);
-
-    this->map1 = channels[0];
-    this->map2 = channels[1];
-    return 1;
+    this->map1 = mapX;
+    this->map2 = mapY;
 }
 
 cv::Mat FisheyeDewarper::dewarpImage(cv::Mat inputImage)

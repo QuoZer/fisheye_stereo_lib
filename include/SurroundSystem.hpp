@@ -40,6 +40,8 @@ public:
 		DEPTH
 	};
 
+	std::string systemName;
+
 
 private: //* Containers *//
 	/// <summary>
@@ -56,6 +58,8 @@ private: //* Containers *//
 	std::vector<std::shared_ptr<Stereopair>> stereopairs;
 
 public:
+	SurroundSystem(const char* systemName);
+
 	/// <summary>
 	/// Takes the cameras into the SurroundSystem
 	/// </summary>
@@ -63,7 +67,6 @@ public:
 	/// <returns>Index of the added camera</returns>
 	int addNewCam(CameraModel& readyModel);
 
-	//CameraModel SurroundSystem::getCameraModel(CameraModels);
 	
 	/// <summary>
 	/// Form a stereopair out of two cameras. One camera can be a part of multiple stereopairs
@@ -89,6 +92,11 @@ public:
 	/// </summary>
 	/// <param name="saveResults"> Save computed stereopairs in a file for future use (TODO: implement) </param>
 	void prepareLUTs(bool saveResults);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	int loadLUTs(const char* name);
 
 	/// <summary>
 	/// Get a number of declared stereopairs
