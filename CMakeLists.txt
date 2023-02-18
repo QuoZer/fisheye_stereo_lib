@@ -1,12 +1,13 @@
-set(OpenCV_DIR "../OCV_install")
+set(OpenCV_DIR "C:/Users/Matvey/Soft/OpenCV/opencv/build")
 set(CMAKE_BUILD_FILES_DIRECTORY "./build")
 
-set (CMAKE_CXX_STANDARD 11)
-cmake_minimum_required(VERSION 2.8)
+set (CMAKE_CXX_STANDARD 14)
+cmake_minimum_required(VERSION 3.2)
 
 project( fisheye_stereo )
 
 find_package( OpenCV REQUIRED )
+
 include_directories( ${OpenCV_INCLUDE_DIRS}
  ${CMAKE_CURRENT_SOURCE_DIR}/include
  D:/Work/Coding/Repos/cv-plot/CvPlot/inc

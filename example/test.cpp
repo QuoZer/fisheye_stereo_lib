@@ -1,4 +1,4 @@
-#include "opencv2/ccalib/omnidir.hpp"
+//#include "opencv2/ccalib/omnidir.hpp"
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"
 #include "opencv2/calib3d.hpp"
@@ -70,7 +70,7 @@ int main(int argc, char** argv)
     SS.createStereopair(2, 3, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
 
 /*  3. Compute look-up tables  */
-    //SS.prepareLUTs(true);
+    SS.prepareLUTs(true);
 
 /*  3.1 OR load already filled ones  */
     SS.loadLUTs("svs");

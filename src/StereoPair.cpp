@@ -81,7 +81,7 @@ void Stereopair::saveMaps(int index, std::string& systemId)
 
     std::string name = systemId + std::to_string(index) + "_" + leftCamera->modelName + rightCamera->modelName + ".png";
 
-    cv::imwrite(name, full_map);
+    cv::imwrite(name, full_map);        // TODO: casts the image to 8 bit, breaks the maps
 
 }
 
