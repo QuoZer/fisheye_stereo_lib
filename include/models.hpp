@@ -52,7 +52,7 @@ public:
 };
 
 /// <summary>
-/// 
+/// Both atan models are almost identical equidistant fisheye projections 
 /// </summary>
 class AtanModel : public CameraModel
 {

@@ -16,8 +16,11 @@
 using namespace cv;
 using namespace std;
 
+
 int main(int argc, char** argv)
 {
+
+
     // test image path 
     string image_path = "C:/Users/Matvey/Repos/fisheye_stereo/data/stereo_img/80_stereo_shot.jpg";
     string write_path = ".";
@@ -72,8 +75,8 @@ int main(int argc, char** argv)
 /*  3. Compute look-up tables  */
     SS.prepareLUTs(true);
 
-/*  3.1 OR load already filled ones  */
-    SS.loadLUTs("svs");
+/*  3.1 OR load already filled ones (WIP) */
+    //SS.loadLUTs("svs");
 	
 /*  4. Get images  */
     Mat combinedRemap1(Size(newSize.width*2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
