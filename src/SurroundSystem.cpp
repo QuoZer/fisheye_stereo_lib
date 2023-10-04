@@ -16,7 +16,7 @@ int SurroundSystem::addNewCam(CameraModel& readyModel)
 }
 
 
-int SurroundSystem::createStereopair(int lCamIndex, int rCamIndex, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod sm)
+int SurroundSystem::createStereopair(int lCamIndex, int rCamIndex, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod sm, const std::string& stereoParamsPath )
 {
 	std::shared_ptr<CameraModel> left = cameras[lCamIndex];
 	std::shared_ptr<CameraModel> right = cameras[rCamIndex];
@@ -31,13 +31,13 @@ int SurroundSystem::createStereopair(int lCamIndex, int rCamIndex, cv::Size reco
 	// create a stereopair based on the newly created dewarpers
 	std::shared_ptr<Stereopair> SP( new Stereopair(left, leftDewarper, right, rightDewarper, reconstructedRes) );
 	SP->setOptimalDirecton();
-	SP->setStereoMethod(sm);
+	SP->setStereoMethod(sm, stereoParamsPath);
 	stereopairs.push_back(SP);
 	// return index
 	return stereopairs.size() - 1;
 }
 
-int SurroundSystem::createStereopair(CameraModel& leftModel, CameraModel& rightModel, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod sm)
+int SurroundSystem::createStereopair(CameraModel& leftModel, CameraModel& rightModel, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod sm, const std::string& stereoParamsPath)
 {
 	int lCamIndex = addNewCam(leftModel);
 	int rCamIndex = addNewCam(rightModel);
@@ -53,7 +53,7 @@ int SurroundSystem::createStereopair(CameraModel& leftModel, CameraModel& rightM
 
 	std::shared_ptr<Stereopair> SP( new Stereopair(left, leftDewarper, right, rightDewarper, reconstructedRes) );
 	//SP->setOptimalDirecton();
-	SP->setStereoMethod(sm);
+	SP->setStereoMethod(sm, stereoParamsPath);
 	stereopairs.push_back(SP);
 
 	return stereopairs.size() - 1;
@@ -119,7 +119,10 @@ void SurroundSystem::getImage(int stereopairIndex, ImageType IT, cv::Mat& l, cv:
 		cv::hconcat(leftImageRemapped, rightImageRemapped, dst);
 		return;
 	case SurroundSystem::DISPARITY:
-		stereopairs[stereopairIndex]->getDisparity(dst, l, r);
+		stereopairs[stereopairIndex]->getRemapped(l, r, leftImageRemapped, rightImageRemapped);
+		leftImageRemapped = leftImageRemapped(cv::Rect(0, 0, out_size.width, out_size.height));
+		rightImageRemapped = rightImageRemapped(cv::Rect(0, 0, out_size.width, out_size.height));
+		stereopairs[stereopairIndex]->getDisparity(dst, leftImageRemapped, rightImageRemapped);
 		return;
 	case SurroundSystem::DEPTH:
 		stereopairs[stereopairIndex]->getDepth(dst, l, r);

@@ -13,6 +13,7 @@
  * 3. Use the 'getImage' method with the desired stereopair index to get a pair of undistorted images
  * 
  * TODO: Fix when the systems starts to return depth instead
+ * TODO: Proper destructor
  */
 class SurroundSystem {
 public:
@@ -76,7 +77,8 @@ public:
 	/// <param name="direction"> Desired direction of stereo optical axis (TODO: implement)</param>
 	/// <param name="Method"> Stereo matching method</param>
 	/// <returns>Index of the created stereopair</returns>
-	int createStereopair(CameraModel& leftModel, CameraModel& rightModel, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod);
+	int createStereopair(CameraModel& leftModel, CameraModel& rightModel, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod, const std::string& stereoParamsPath);
+	
 	/// <summary>
 	/// Form a stereopair out of two cameras. One camera can be a part of multiple stereopairs
 	/// </summary>
@@ -85,7 +87,7 @@ public:
 	/// <param name="direction"> Desired direction of stereo optical axis (TODO: implement) </param>
 	/// <param name="Method"> Stereo matching method</param>
 	/// <returns>Index of the created stereopair</returns>
-	int createStereopair(int lCamIndex, int rCamIndex, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod);
+	int createStereopair(int lCamIndex, int rCamIndex, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod, const std::string& stereoParamsPath);
 	
 	/// <summary>
 	/// Computes look-up-tables for all the declared stereopairs

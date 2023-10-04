@@ -18,7 +18,7 @@ class Stereopair
 	/// <summary>
 	/// Configured stereo matcher (SGBM/ SGM)
 	/// </summary>
-	cv::StereoMatcher* matcher;
+	std::shared_ptr<cv::StereoMatcher> matcher;
 	
 	/// <summary>
 	/// Dewarpers for left and right cameras
@@ -44,8 +44,6 @@ private:
 	int sign(double x);
 
 public:
-	Stereopair(std::shared_ptr<CameraModel> lCam, std::shared_ptr<FisheyeDewarper> lDWarp,
-		std::shared_ptr<CameraModel> rCam, std::shared_ptr<FisheyeDewarper> rDWarp, cv::Size outSize);
 	/// <summary>
 	/// Construct stereopair object. Meant to be primerely used by the SurroundSystem object
 	/// </summary>
@@ -54,9 +52,8 @@ public:
 	/// <param name="rCam"> Right configured camera </param>
 	/// <param name="rDWarp"> Right dewarper </param>
 	/// <param name="outSize"> Dewarped image size </param>
-	/// <param name="sm"> Enum of stereo matching method </param>
 	Stereopair(std::shared_ptr<CameraModel> lCam, std::shared_ptr<FisheyeDewarper> lDWarp,
-		std::shared_ptr<CameraModel> rCam, std::shared_ptr<FisheyeDewarper> rDWarp, cv::Size outSize, StereoMethod sm);
+		std::shared_ptr<CameraModel> rCam, std::shared_ptr<FisheyeDewarper> rDWarp, cv::Size outSize);
 	
 	/// <summary>
 	/// Translates quaternion values into Euler angles
@@ -117,14 +114,20 @@ public:
 	int getDepth(cv::OutputArray& dist, cv::InputArray& leftImage, cv::InputArray& rightImage);
 
 	/// <summary>
+	/// Loads parameters for the stereomatcher from a file
+	/// </summary>
+	void loadStereoSGBMParameters(const std::string& filename, cv::Ptr<cv::StereoSGBM>& matcher);
+
+	/// <summary>
 	/// Creates stereomatcher object based on the chosen type (TODO: implement)
 	/// </summary>
 	/// <param name="sm"></param>
-	void setStereoMethod(StereoMethod sm);
+	/// <param name="params_path"></param>
+	void setStereoMethod(StereoMethod sm, std::string params_path);
 
 	/// <summary>
 	/// Calculate and set the best roll,pitch,yaw values for each virtual camera in the stereopair 
-	/// based on their direction
+	/// based on their direction. TODO: implement?
 	/// </summary>
 	void setOptimalDirecton();
 

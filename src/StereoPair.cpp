@@ -14,20 +14,6 @@ Stereopair::Stereopair(std::shared_ptr<CameraModel> lCam, std::shared_ptr<Fishey
     outputSize = outSize;
 }
 
-Stereopair::Stereopair(std::shared_ptr<CameraModel> lCam, std::shared_ptr<FisheyeDewarper> lDWarp,
-                       std::shared_ptr<CameraModel> rCam, std::shared_ptr<FisheyeDewarper> rDWarp,
-                       cv::Size outSize, StereoMethod sm)
-{
-    leftCamera = lCam;
-    rightCamera = rCam;
-
-    leftDewarper = lDWarp;
-    rightDewarper = rDWarp;
-
-    outputSize = outSize;
-
-    setStereoMethod(sm);
-}
 
 cv::Vec3d Stereopair::quatToRpy(cv::Vec4d quaternion)
 {
@@ -99,21 +85,48 @@ void Stereopair::loadMaps(int index, const char* systemId)
     rightDewarper->setMaps(fourChannels[2], fourChannels[3]);
 }
 
-void Stereopair::setStereoMethod(StereoMethod sm)
+void Stereopair::loadStereoSGBMParameters(const std::string& filename, cv::Ptr<cv::StereoSGBM>& matcher) 
 {
+    cv::FileStorage fs(filename, cv::FileStorage::READ);
 
-    switch (sm)
-    {
-    case BM:
-        matcher = cv::StereoBM::create();
-        break;
-    case SGBM:
-        matcher = cv::StereoSGBM::create();
-        
-        break;
-    default:
-        break;
+    if (!fs.isOpened()) {
+        std::cerr << "Error: Could not open the parameter file " << filename << std::endl;
+        return;
     }
+
+    cv::Ptr <cv::StereoSGBM> sgbm = cv::StereoSGBM::create();
+    
+    // Load parameters from the file
+    // Assign the loaded parameters to the matcher
+    matcher = cv::StereoSGBM::create(fs["minDisparity"], fs["numDisparities"], fs["SADWindowSize"]);
+    matcher->setP1(fs["P1"]);
+    matcher->setP2(fs["P2"]);
+    //matcher->setPreFilterCapfs(fs["preFilterCap"]);
+    matcher->setUniquenessRatio(fs["uniquenessRatio"]);
+    matcher->setSpeckleWindowSize(fs["speckleWindowSize"]);
+    matcher->setSpeckleRange(fs["speckleRange"]);
+    matcher->setDisp12MaxDiff(fs["disp12MaxDiff"]);
+    matcher->setBlockSize(fs["blockSize"]);
+    
+    fs.release();
+}
+
+void Stereopair::setStereoMethod(StereoMethod sm, std::string params_path)
+{
+    if ( (sm == SGBM || sm == BM) && params_path.empty())
+		throw std::runtime_error("No parameter file assigned");
+    if (sm == SGBM)
+		matcher = cv::StereoSGBM::create();
+	else if (sm == BM)
+		matcher = cv::StereoBM::create();
+	else
+		throw std::runtime_error("No matcher assigned");
+
+    //matcher = cv::StereoSGBM::create();
+    cv::Ptr<cv::StereoSGBM> sgbm;
+    loadStereoSGBMParameters(params_path, sgbm);
+    matcher = sgbm;
+
 }
 
 // return a number's sign
@@ -163,13 +176,19 @@ int Stereopair::getRemapped(cv::Mat& left, cv::Mat& right, cv::Mat& leftRemapped
 int Stereopair::getDisparity(cv::OutputArray& dist, cv::InputArray& leftImage, cv::InputArray& rightImage)
 {
     // static ?? 
-    cv::Mat leftImageRemapped(leftCamera->newSize, CV_8UC3, cv::Scalar(0, 0, 0));
-    cv::Mat rightImageRemapped(rightCamera->newSize, CV_8UC3, cv::Scalar(0, 0, 0));
+    cv::Mat leftImageRemapped(this->outputSize, CV_8UC3, cv::Scalar(0, 0, 0));
+    cv::Mat rightImageRemapped(this->outputSize, CV_8UC3, cv::Scalar(0, 0, 0));
     
-    //getRemapped(leftImage.getMat(), rightImage.getMat(), leftImageRemapped, rightImageRemapped);
-    
+    cv::cvtColor(leftImage, leftImageRemapped, cv::COLOR_BGR2GRAY);
+    cv::cvtColor(rightImage, rightImageRemapped, cv::COLOR_BGR2GRAY);
+
+    cv::Mat disp, disparity;
     // TODO: check if the matcher is ready before computing
-    matcher->compute(leftImageRemapped, rightImageRemapped, dist);
+    matcher->compute(leftImageRemapped, rightImageRemapped, disp);
+
+    disp.convertTo(disparity, CV_32F, 1.0);
+    disparity = (disparity / 16.0f - (float)matcher->getMinDisparity()) / ((float)matcher->getNumDisparities());
+    disparity.copyTo(dist);
 
     return 0;
 }

@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 
 
     // test image path 
-    string image_path = "C:/Users/Matvey/Repos/fisheye_stereo/data/stereo_img/80_stereo_shot.jpg";
+    string image_path = "C:/Users/Matvey/Repos/fisheye_stereo/data/stereo_img/38_stereo_shot.jpg";
     string write_path = ".";
     // read the image and separate into two 
     Mat img = imread(image_path, -1);
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 
     SS.addNewCam(SM1);
     SS.addNewCam(SM2);
-    SS.createStereopair(0, 1, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
+    SS.createStereopair(0, 1, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM, "C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/out/build/x64-Debug/stereo_sgbm_parameters.yaml");
 
 // KANNALA-BRANDT     
     KBModel KBM1;
@@ -70,7 +70,7 @@ int main(int argc, char** argv)
 
     SS.addNewCam(KBM1);
     SS.addNewCam(KBM2);
-    SS.createStereopair(2, 3, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM);
+    SS.createStereopair(2, 3, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM, "C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/out/build/x64-Debug/stereo_sgbm_parameters.yaml");
 
 /*  3. Compute look-up tables  */
     SS.prepareLUTs(true);
@@ -81,10 +81,12 @@ int main(int argc, char** argv)
 /*  4. Get images  */
     Mat combinedRemap1(Size(newSize.width*2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
     Mat combinedRemap2(Size(newSize.width * 2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
-    SS.getImage(0, SurroundSystem::RECTIFIED, left, right,  combinedRemap1);
-    SS.getImage(1, SurroundSystem::RECTIFIED, left, right, combinedRemap2);
+    Mat disparity1(newSize, CV_32F, Scalar(0, 0, 0));
+    Mat disparity2(newSize, CV_32F, Scalar(0, 0, 0));
+    SS.getImage(0, SurroundSystem::DISPARITY, left, right, disparity1);
+    SS.getImage(1, SurroundSystem::DISPARITY, left, right, disparity2);
 
 /*  5. See the results  */
-    ShowManyImages("Remapped", 2, combinedRemap1, combinedRemap2);
+    ShowManyImages("Remapped", 2, disparity1, disparity2);
     waitKey(0);        
 }
