@@ -63,3 +63,12 @@ void ScaramuzzaModel::setIntrinsics(std::initializer_list<double> coeffs, double
     this->stretchMatrix = stretchMatrix;
     this->lambda = lambda;
 }
+
+void ScaramuzzaModel::setIntrinsics(cv::Vec4d coeffs, double lambda,
+    cv::Vec2d centerOffset, cv::Matx22d stretchMatrix)
+{
+    this->scara_polynom.assign(coeffs.val, coeffs.val + 4);
+    this->centerOffset = centerOffset;
+    this->stretchMatrix = stretchMatrix;
+    this->lambda = lambda;
+}

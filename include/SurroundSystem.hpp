@@ -27,7 +27,7 @@ public:
 		ATAN,
 		SCARAMUZZA,
 		MEI,
-		KBModel
+		KB
 	};
 	
 	/// <summary>
@@ -89,6 +89,16 @@ public:
 	/// <returns>Index of the created stereopair</returns>
 	int createStereopair(int lCamIndex, int rCamIndex, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod, const std::string& stereoParamsPath);
 	
+	void readCamera(cv::FileNode& node);
+
+	void readStereopair(cv::FileNode& node);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="filepath"></param>
+	void readSystemParams(const std::string& filepath);
+
 	/// <summary>
 	/// Computes look-up-tables for all the declared stereopairs
 	/// </summary>

@@ -94,20 +94,17 @@ void Stereopair::loadStereoSGBMParameters(const std::string& filename, cv::Ptr<c
         return;
     }
 
-    cv::Ptr <cv::StereoSGBM> sgbm = cv::StereoSGBM::create();
-    
     // Load parameters from the file
     // Assign the loaded parameters to the matcher
-    matcher = cv::StereoSGBM::create(fs["minDisparity"], fs["numDisparities"], fs["SADWindowSize"]);
-    matcher->setP1(fs["P1"]);
-    matcher->setP2(fs["P2"]);
-    //matcher->setPreFilterCapfs(fs["preFilterCap"]);
+    matcher = cv::StereoSGBM::create(fs["minDisparity"], (int)fs["numDisparities"]*16, (int)fs["blockSize"]*2+5);
+    matcher->setPreFilterCap(fs["preFilterCap"]);
     matcher->setUniquenessRatio(fs["uniquenessRatio"]);
-    matcher->setSpeckleWindowSize(fs["speckleWindowSize"]);
+    matcher->setSpeckleWindowSize((int)fs["speckleWindowSize"]*2);
     matcher->setSpeckleRange(fs["speckleRange"]);
     matcher->setDisp12MaxDiff(fs["disp12MaxDiff"]);
-    matcher->setBlockSize(fs["blockSize"]);
-    
+    //preFilterType : 1
+    //preFilterSize : 1
+    //textureThreshold : 10
     fs.release();
 }
 

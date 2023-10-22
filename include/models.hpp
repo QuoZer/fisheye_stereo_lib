@@ -39,6 +39,7 @@ public:	///* Projection functions *///
 
 public:
 	ScaramuzzaModel();
+
 	/// <summary>
 	/// Specify camera intrinsic parameters according to the model. Can be obtained from e.g. MATLAB calibration toolbox. 
 	/// </summary>
@@ -47,6 +48,8 @@ public:
 	/// <param name="centerOffset"> Image centre </param>
 	/// <param name="stretchMatrix"> 2x2 Stretch matrix </param>
 	void setIntrinsics(std::initializer_list<double> coeffs, double lambda,
+		cv::Vec2d centerOffset, cv::Matx22d stretchMatrix);
+	void setIntrinsics(cv::Vec4d coeffs, double lambda,
 		cv::Vec2d centerOffset, cv::Matx22d stretchMatrix);
 
 };
@@ -115,6 +118,10 @@ public:
 	/// <param name="stretchMatrix"> 2x2 Stretch matrix </param>
 	void setIntrinsics(std::initializer_list<double> coeffs,
 		cv::Vec2d centerOffset, cv::Matx22d stretchMatrix);
+
+	void setIntrinsics(cv::Vec4d coeffs,
+						cv::Vec2d centerOffset,
+						cv::Matx22d stretchMatrix);
 
 	cv::Point2d projectWorldToPixel(cv::Mat worldPoint);
 	cv::Mat projectPixelToWorld(cv::Point pixel);

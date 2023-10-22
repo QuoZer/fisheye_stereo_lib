@@ -39,6 +39,7 @@ int main(int argc, char** argv)
     
 /*  1. Create the stereo system object    */ 
     SurroundSystem SS("svs");
+    SS.readSystemParams("C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/svs_params.xml");
 
 /*  2. Describe your system. */
 
@@ -60,7 +61,7 @@ int main(int argc, char** argv)
 
 // KANNALA-BRANDT     
     KBModel KBM1;
-    KBM1.setIntrinsics({ 0.000757676, -0.000325907, 0.0000403, -0.000001866 }, cv::Vec2d(540, 540), cv::Matx22d(343.536, 0, 0, 343.471));
+    KBM1.setIntrinsics( { 0.000757676, -0.000325907, 0.0000403, -0.000001866 }, cv::Vec2d(540, 540), cv::Matx22d(343.536, 0, 0, 343.471));
     KBM1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));
     KBM1.setCamParams(origSize);
     KBModel KBM2;
@@ -85,8 +86,13 @@ int main(int argc, char** argv)
     Mat disparity2(newSize, CV_32F, Scalar(0, 0, 0));
     SS.getImage(0, SurroundSystem::DISPARITY, left, right, disparity1);
     SS.getImage(1, SurroundSystem::DISPARITY, left, right, disparity2);
+    SS.getImage(1, SurroundSystem::RECTIFIED, left, right, combinedRemap1);
+
+    // Save combinedRemap
+    //imwrite("./combinedRemap1.png", combinedRemap1);
 
 /*  5. See the results  */
-    ShowManyImages("Remapped", 2, disparity1, disparity2);
+    imshow("Disparity", disparity2);
     waitKey(0);        
+    //ShowManyImages("Remapped", 2, disparity1, disparity2);
 }

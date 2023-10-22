@@ -2,3 +2,4 @@
 build/.vs/fisheye_stereo/v16/.suo
 *.ipch
 build/
+/.vs

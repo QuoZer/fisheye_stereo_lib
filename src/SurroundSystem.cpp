@@ -37,6 +37,93 @@ int SurroundSystem::createStereopair(int lCamIndex, int rCamIndex, cv::Size reco
 	return stereopairs.size() - 1;
 }
 
+void SurroundSystem::readCamera(cv::FileNode& node) 
+{
+	std::string camera_model = node["model"];
+	if (camera_model == "Scaramuzza")
+	{
+		ScaramuzzaModel newScaraCamera;
+		//std::initializer_list <double> coefficients;
+		cv::Vec4d coefficients;
+		cv::Vec2d principal_point;
+		cv::Matx22d skew;
+		cv::Vec3d pos;
+		cv::Vec4d rot;
+		cv::Size original(node["intrinsics"]["resolution"]["width"], node["intrinsics"]["resolution"]["height"]);
+		node["extrinsics"]["translation"] >> pos;
+		node["extrinsics"]["rotation"] >> rot;
+		node["intrinsics"]["skew"] >> skew;
+		node["intrinsics"]["principal_point"] >> principal_point;
+		node["intrinsics"]["coefficients"] >> coefficients;
+		newScaraCamera.setIntrinsics(coefficients, node["intrinsics"]["lambda"], principal_point, skew);
+		newScaraCamera.setExtrinsics(pos, rot);
+		newScaraCamera.setCamParams(original);
+
+		this->addNewCam(newScaraCamera);
+	}
+	if (camera_model == "KB")
+	{
+		KBModel newKBCamera;
+		cv::Vec4d coefficients;
+		cv::Vec2d principal_point;
+		cv::Matx22d skew;
+		cv::Vec3d pos;
+		cv::Vec4d rot;
+		cv::Size original(node["intrinsics"]["resolution"]["width"], node["intrinsics"]["resolution"]["height"]);
+		node["extrinsics"]["translation"] >> pos;
+		node["extrinsics"]["rotation"] >> rot;
+		node["intrinsics"]["skew"] >> skew;
+		node["intrinsics"]["principal_point"] >> principal_point;
+		node["intrinsics"]["coefficients"] >> coefficients;
+		newKBCamera.setIntrinsics(coefficients, principal_point, skew);
+		newKBCamera.setExtrinsics(pos, rot);
+		newKBCamera.setCamParams(original);
+
+		this->addNewCam(newKBCamera);
+	}
+	// TODO: add other camera models
+}
+
+void SurroundSystem::readStereopair(cv::FileNode& node)
+{
+	cv::FileNode sp = node;
+	cv::Size out_size(sp["out_resolution"]["width"], sp["out_resolution"]["height"]);
+	cv::Vec3d direction;
+	std::string stereo_method_str;
+	sp["orientation"] >> direction;
+	sp["method"] >> stereo_method_str;
+
+	StereoMethod stereo_method;
+	if (stereo_method_str == "BM") stereo_method = StereoMethod::BM;
+	else if (stereo_method_str == "SGBM") stereo_method = StereoMethod::SGBM;
+	else std::cerr << "Unknown stereo method " << stereo_method_str << std::endl;
+
+	this->createStereopair((int)sp["camera1"], (int)sp["camera2"], out_size, direction, stereo_method, sp["parameters_file"]);
+}
+
+void SurroundSystem::readSystemParams(const std::string& filepath)
+{
+	cv::FileStorage fs(filepath, cv::FileStorage::READ);
+	if (!fs.isOpened()) {
+		std::cerr << "Failed to open file " << filepath << std::endl;
+		return ;
+	}
+	
+
+	cv::FileNode cameras_node = fs["system"]["cameras"];
+	for (cv::FileNodeIterator it = cameras_node.begin(); it != cameras_node.end(); ++it) 
+	{
+		readCamera(*it);
+	}
+
+	cv::FileNode stereo_pairs_node = fs["system"]["stereopairs"];
+	for (cv::FileNodeIterator it = stereo_pairs_node.begin(); it != stereo_pairs_node.end(); ++it) 
+	{
+		readStereopair(*it);
+	}
+
+}
+
 int SurroundSystem::createStereopair(CameraModel& leftModel, CameraModel& rightModel, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod sm, const std::string& stereoParamsPath)
 {
 	int lCamIndex = addNewCam(leftModel);

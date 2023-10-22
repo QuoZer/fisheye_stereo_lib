@@ -1,4 +1,4 @@
-#include "opencv2/ccalib/omnidir.hpp"
+//#include "opencv2/ccalib/omnidir.hpp"
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"
 #include "opencv2/calib3d.hpp"
@@ -80,7 +80,7 @@ int main(int argc, char** argv)
     Size newSize(540, 540);        // origSize * 1;            // determines the size of the output image
     
 // Create the stereo system object
-    SurroundSystem SS; 
+    SurroundSystem SS("svs");
 
 #ifdef MEI
     MeiModel SM1;

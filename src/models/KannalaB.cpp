@@ -20,6 +20,14 @@ void KBModel::setIntrinsics(std::initializer_list<double> coeffs,
     this->stretchMatrix = stretchMatrix;
 }
 
+void KBModel::setIntrinsics(cv::Vec4d coeffs,
+    cv::Vec2d centerOffset, cv::Matx22d stretchMatrix)
+{
+    this->kb_polynom.assign(coeffs.val, coeffs.val + 4);
+    this->centerOffset = centerOffset;
+    this->stretchMatrix = stretchMatrix;
+}
+
 cv::Point2d KBModel::projectWorldToPixel(cv::Mat worldPoint)
 {
 
