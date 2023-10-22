@@ -39,39 +39,8 @@ int main(int argc, char** argv)
     
 /*  1. Create the stereo system object    */ 
     SurroundSystem SS("svs");
-    SS.readSystemParams("C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/svs_params.xml");
-
 /*  2. Describe your system. */
-
-// SCARAMUZZA
-    // Create the first camera object and fill its params
-    ScaramuzzaModel SM1; // = SS.getCameraModel(SurroundSystem::CameraModels::SCARAMUZZA);
-    SM1.setIntrinsics({ 345.1319, -0.0011, 5.7623 * pow(10, -7), -1.3985 * pow(10, -9) }, 0.022, cv::Vec2d(540, 540), cv::Matx22d(1, 0, 0, 1)); //0.0675 MRE
-    SM1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));
-    SM1.setCamParams(origSize);
-    // Create the second camera object and fill its params
-    ScaramuzzaModel SM2;
-    SM2.setIntrinsics({ 345.1319, -0.0011, 5.7623 * pow(10, -7), -1.3985 * pow(10, -9) }, 0.022, cv::Vec2d(540, 540), cv::Matx22d(1, 0, 0, 1));
-    SM2.setExtrinsics(cv::Vec3d(1.0, 0, 0), cv::Vec4d(0, 0, -0.3826834, 0.9238795)); // 45^o
-    SM2.setCamParams(origSize);
-
-    SS.addNewCam(SM1);
-    SS.addNewCam(SM2);
-    SS.createStereopair(0, 1, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM, "C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/out/build/x64-Debug/stereo_sgbm_parameters.yaml");
-
-// KANNALA-BRANDT     
-    KBModel KBM1;
-    KBM1.setIntrinsics( { 0.000757676, -0.000325907, 0.0000403, -0.000001866 }, cv::Vec2d(540, 540), cv::Matx22d(343.536, 0, 0, 343.471));
-    KBM1.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, 0.3826834, 0.9238795));
-    KBM1.setCamParams(origSize);
-    KBModel KBM2;
-    KBM2.setIntrinsics( { 0.000757676, -0.000325907, 0.0000403, -0.000001866 }, cv::Vec2d(540, 540), cv::Matx22d(343.536, 0, 0, 343.471));
-    KBM2.setExtrinsics(cv::Vec3d(0, 0, 0), cv::Vec4d(0, 0, -0.3826834, 0.9238795));
-    KBM2.setCamParams(origSize);
-
-    SS.addNewCam(KBM1);
-    SS.addNewCam(KBM2);
-    SS.createStereopair(2, 3, newSize, cv::Vec3d(0, 0, 0), StereoMethod::SGBM, "C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/out/build/x64-Debug/stereo_sgbm_parameters.yaml");
+    SS.readSystemParams("C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/svs_params.xml");
 
 /*  3. Compute look-up tables  */
     SS.prepareLUTs(true);
@@ -86,13 +55,14 @@ int main(int argc, char** argv)
     Mat disparity2(newSize, CV_32F, Scalar(0, 0, 0));
     SS.getImage(0, SurroundSystem::DISPARITY, left, right, disparity1);
     SS.getImage(1, SurroundSystem::DISPARITY, left, right, disparity2);
-    SS.getImage(1, SurroundSystem::RECTIFIED, left, right, combinedRemap1);
+    SS.getImage(0, SurroundSystem::RECTIFIED, left, right, combinedRemap1);
+    SS.getImage(1, SurroundSystem::RECTIFIED, left, right, combinedRemap2);
 
     // Save combinedRemap
     //imwrite("./combinedRemap1.png", combinedRemap1);
 
 /*  5. See the results  */
-    imshow("Disparity", disparity2);
+    //imshow("Disparity", disparity2);
+    ShowManyImages("Remapped", 2, combinedRemap1, combinedRemap2);
     waitKey(0);        
-    //ShowManyImages("Remapped", 2, disparity1, disparity2);
 }

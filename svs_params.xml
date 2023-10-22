@@ -76,7 +76,7 @@
 		  <rows>2</rows>
 		  <cols>2</cols>
 		  <dt>d</dt>
-		  <data> 1. 0. 0. 1.</data>
+		  <data> 343.536 0. 0. 343.471</data>
 	  </skew>
       <resolution>
         <width>1080</width>
@@ -107,7 +107,7 @@
 		  <rows>2</rows>
 		  <cols>2</cols>
 		  <dt>d</dt>
-		  <data> 1. 0. 0. 1.</data>
+		  <data> 343.536 0. 0. 343.471 </data>
 	  </skew>
       <resolution>
         <width>1080</width>
@@ -145,8 +145,8 @@
     <camera1>2</camera1>
     <camera2>3</camera2>
     <out_resolution>
-      <width>640</width>
-      <height>480</height>
+      <width>540</width>
+      <height>540</height>
     </out_resolution>
     <method>SGBM</method>
     <parameters_file>C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/out/build/x64-Debug/stereo_sgbm_parameters.yaml</parameters_file>
@@ -155,5 +155,6 @@
     </orientation>
   </stereopair>
   </stereopairs>
+	
 </system>
 </opencv_storage>

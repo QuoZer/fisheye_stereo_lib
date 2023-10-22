@@ -10,7 +10,6 @@ int SurroundSystem::addNewCam(CameraModel& readyModel)
 {
 	std::shared_ptr<CameraModel> sharedModel(&readyModel);
 	cameras.push_back(sharedModel);
-	//dewarpers.push_back(std::shared_ptr<FisheyeDewarper>( new FisheyeDewarper(sharedModel) ));
 
 	return cameras.size()-1;  // new camera index
 }
@@ -59,7 +58,8 @@ void SurroundSystem::readCamera(cv::FileNode& node)
 		newScaraCamera.setExtrinsics(pos, rot);
 		newScaraCamera.setCamParams(original);
 
-		this->addNewCam(newScaraCamera);
+		std::shared_ptr<CameraModel> cam_ptr = std::make_shared<ScaramuzzaModel>(newScaraCamera);
+		this->cameras.push_back(cam_ptr);
 	}
 	if (camera_model == "KB")
 	{
@@ -79,7 +79,9 @@ void SurroundSystem::readCamera(cv::FileNode& node)
 		newKBCamera.setExtrinsics(pos, rot);
 		newKBCamera.setCamParams(original);
 
-		this->addNewCam(newKBCamera);
+		std::shared_ptr<CameraModel> cam_ptr = std::make_shared<KBModel>(newKBCamera);
+		this->cameras.push_back(cam_ptr);
+		
 	}
 	// TODO: add other camera models
 }

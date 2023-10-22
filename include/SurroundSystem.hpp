@@ -49,10 +49,17 @@ private: //* Containers *//
 	/// Holds the calibrated dewarpers
 	/// </summary>
 	std::vector<std::shared_ptr<FisheyeDewarper>> dewarpers; 
+
 	/// <summary>
-	/// Assigned 'CameraModel' objects
+	/// Assigned 'CameraModel' pointers 
 	/// </summary>
-	std::vector<std::shared_ptr<CameraModel>> cameras;		// replace with a dictionary?
+	std::vector<std::shared_ptr<CameraModel>> cameras;	
+
+	/// <summary>
+	/// Assigned 'CameraModel'  objects
+	/// </summary>
+	std::vector<CameraModel> cameras_full;	
+
 	/// <summary>
 	/// Configured stereopairs vector
 	/// </summary>
@@ -67,6 +74,7 @@ public:
 	/// <param name="readyModel">A configured camera model object ('CameraModel' inherited)</param>
 	/// <returns>Index of the added camera</returns>
 	int addNewCam(CameraModel& readyModel);
+
 
 	
 	/// <summary>
