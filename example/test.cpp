@@ -19,28 +19,24 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-
-
-    // test image path 
-    string image_path = "C:/Users/Matvey/Repos/fisheye_stereo/data/stereo_img/38_stereo_shot.jpg";
+        // test image path 
+    string left_path = "C:/Users/Matvey/Repos/fisheye_stereo/data/ELTE/90deg/Dev1_Image_w1920_h1200_fn4.bmp";
+    string right_path = "C:/Users/Matvey/Repos/fisheye_stereo/data/ELTE/90deg/Dev0_Image_w1920_h1200_fn4.bmp";
     string write_path = ".";
     // read the image and separate into two 
-    Mat img = imread(image_path, -1);
-    Mat img0 = img(Rect(0, 0, img.cols / 2, img.rows)); //left half
-    Mat img1 = img(Rect(img.cols / 2, 0, img.cols / 2, img.rows));  //right half
-    Mat left = img0.clone();
-    Mat right = img1.clone();
+    Mat left = imread(left_path, -1);
+    Mat right = imread(right_path, -1);
     // display input
     ShowManyImages("Originals", 2, left, right);
     waitKey(15);
 
-    Size origSize(1080, 1080);       //left.size();
+    Size origSize(1920, 1200);       //left.size();
     Size newSize(540, 540);          // determines the size of the output image
     
 /*  1. Create the stereo system object    */ 
-    SurroundSystem SS("svs");
+    SurroundSystem SS("elte");
 /*  2. Describe your system. */
-    SS.readSystemParams("C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/svs_params.xml");
+    SS.readSystemParams("C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/elte_params.xml");
 
 /*  3. Compute look-up tables  */
     SS.prepareLUTs(true);
