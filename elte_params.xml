@@ -1,22 +1,21 @@
 <?xml version="1.0"?>
 <opencv_storage>
 <system>
-
 <cameras>
 	<camera>
     <model>KB</model>
     <intrinsics>
       <coefficients>
-		  6.7347584605959446e-03 2.0369133227644502e-03 -1.6886778684379563e-03 -1.4400252523595380e-05
+		  7.1705286702066539e-03 -7.7609492309336776e-04 4.9885785895125193e-04 -5.6825170383296975e-04
 	  </coefficients>
       <principal_point>
-        892 617
+        618 960
       </principal_point>
-      <skew type_id="opencv-matrix">
+    <skew type_id="opencv-matrix">
 		  <rows>2</rows>
 		  <cols>2</cols>
 		  <dt>d</dt>
-		  <data> 554.810 0. 0. 555.047</data>
+		  <data> 557.104 0. 0. 556.873</data>
 	  </skew>
       <resolution>
         <width>1920</width>
@@ -31,24 +30,23 @@
       <rotation>
         0 0 0.3826834 0.9238795
       </rotation>
-    </extrinsics>
-  
-</camera>
-	
-<camera>
-	<model>KB</model>
+    </extrinsics>  
+  </camera>
+
+	<camera>
+    <model>KB</model>
     <intrinsics>
       <coefficients>
-		  6.8692658924200106e-03 1.7695993481153737e-03 -1.3798525450542988e-03 -7.8143749466138388e-05
-	  </coefficients>
+   7.0345345382964554e-03 1.0505115994321341e-04 -5.6893359441318619e-04 -1.7574303121631975e-04
+        </coefficients>
       <principal_point>
-        975 621
+        621 975
       </principal_point>
       <skew type_id="opencv-matrix">
 		  <rows>2</rows>
 		  <cols>2</cols>
 		  <dt>d</dt>
-		  <data> 555.960 0. 0. 556.250 </data>
+		  <data> 557.666 0. 0. 557.596 </data>
 	  </skew>
       <resolution>
         <width>1920</width>
@@ -68,6 +66,7 @@
  </cameras>
 
 <stereopairs>
+
   <stereopair id="0">
     <camera1>0</camera1>
     <camera2>1</camera2>
@@ -76,12 +75,13 @@
       <height>540</height>
     </out_resolution>
     <method>SGBM</method>
-    <parameters_file>C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/out/build/x64-Debug/stereo_sgbm_parameters.yaml</parameters_file>
+    <!-- C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/out/build/x64-Debug/stereo_sgbm_parameters.yaml -->
+    <parameters_file>/home/roser/repos/fisheye_stereo/fy_lib_source/stereo_sgbm_parameters.yaml</parameters_file>
     <orientation>
       0 0 0
     </orientation>
   </stereopair>
-  </stereopairs>
+</stereopairs>
 	
 </system>
 </opencv_storage>

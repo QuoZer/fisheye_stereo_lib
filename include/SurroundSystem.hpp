@@ -97,9 +97,9 @@ public:
 	/// <returns>Index of the created stereopair</returns>
 	int createStereopair(int lCamIndex, int rCamIndex, cv::Size reconstructedRes, cv::Vec3d direction, StereoMethod, const std::string& stereoParamsPath);
 	
-	void readCamera(cv::FileNode& node);
+	void readCamera(const cv::FileNode& node);
 
-	void readStereopair(cv::FileNode& node);
+	void readStereopair(const cv::FileNode& node);
 
 	/// <summary>
 	/// 
