@@ -19,7 +19,7 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-        // test image path 
+    // test image path
     string left_path = "C:/Users/Matvey/Repos/fisheye_stereo/data/ELTE/90deg/Dev1_Image_w1920_h1200_fn6.bmp";
     string right_path = "C:/Users/Matvey/Repos/fisheye_stereo/data/ELTE/90deg/Dev0_Image_w1920_h1200_fn6.bmp";
     string write_path = ".";
@@ -59,4 +59,8 @@ int main(int argc, char** argv)
     imshow("Remapped", combinedRemap1);
     //ShowManyImages("Remapped", 2, combinedRemap1, combinedRemap2);
     waitKey(0);        
+
+    /*  6. Save the results  */
+    imwrite("./left_fn4.png", combinedRemap1(Rect(0, 0, newSize.width, newSize.height)));
+    imwrite("./right_fn4.png", combinedRemap1(Rect(newSize.width, 0, newSize.width, newSize.height)));
 }
