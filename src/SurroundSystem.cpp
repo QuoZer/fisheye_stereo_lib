@@ -49,7 +49,7 @@ void SurroundSystem::readCamera(const cv::FileNode& node)
 		cv::Matx22d skew;
 		cv::Vec3d pos;
 		cv::Vec4d rot;
-		cv::Size original(node["intrinsics"]["resolution"]["width"], node["intrinsics"]["resolution"]["height"]);
+		cv::Size original(node["intrinsics"]["resolution"]["height"], node["intrinsics"]["resolution"]["width"]);
 		node["extrinsics"]["translation"] >> pos;
 		node["extrinsics"]["rotation"] >> rot;
 		node["intrinsics"]["skew"] >> skew;
@@ -70,7 +70,7 @@ void SurroundSystem::readCamera(const cv::FileNode& node)
 		cv::Matx22d skew;
 		cv::Vec3d pos;
 		cv::Vec4d rot;
-		cv::Size original(node["intrinsics"]["resolution"]["width"], node["intrinsics"]["resolution"]["height"]);
+		cv::Size original(node["intrinsics"]["resolution"]["height"], node["intrinsics"]["resolution"]["width"]);
 		node["extrinsics"]["translation"] >> pos;
 		node["extrinsics"]["rotation"] >> rot;
 		node["intrinsics"]["skew"] >> skew;
