@@ -20,8 +20,8 @@ using namespace std;
 int main(int argc, char** argv)
 {
         // test image path 
-    string left_path = "C:/Users/Matvey/Repos/fisheye_stereo/data/ELTE/90deg/Dev1_Image_w1920_h1200_fn4.bmp";
-    string right_path = "C:/Users/Matvey/Repos/fisheye_stereo/data/ELTE/90deg/Dev0_Image_w1920_h1200_fn4.bmp";
+    string left_path = "C:/Users/Matvey/Repos/fisheye_stereo/data/ELTE/90deg/Dev1_Image_w1920_h1200_fn6.bmp";
+    string right_path = "C:/Users/Matvey/Repos/fisheye_stereo/data/ELTE/90deg/Dev0_Image_w1920_h1200_fn6.bmp";
     string write_path = ".";
     // read the image and separate into two 
     Mat left = imread(left_path, -1);
@@ -39,26 +39,24 @@ int main(int argc, char** argv)
     SS.readSystemParams("C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/elte_params.xml");
 
 /*  3. Compute look-up tables  */
-    SS.prepareLUTs(true);
+    SS.prepareLUTs(false);
 
 /*  3.1 OR load already filled ones (WIP) */
     //SS.loadLUTs("svs");
 	
 /*  4. Get images  */
     Mat combinedRemap1(Size(newSize.width*2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
-    Mat combinedRemap2(Size(newSize.width * 2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
     Mat disparity1(newSize, CV_32F, Scalar(0, 0, 0));
-    Mat disparity2(newSize, CV_32F, Scalar(0, 0, 0));
+    
     SS.getImage(0, SurroundSystem::DISPARITY, left, right, disparity1);
-    SS.getImage(1, SurroundSystem::DISPARITY, left, right, disparity2);
     SS.getImage(0, SurroundSystem::RECTIFIED, left, right, combinedRemap1);
-    SS.getImage(1, SurroundSystem::RECTIFIED, left, right, combinedRemap2);
+    
 
     // Save combinedRemap
     //imwrite("./combinedRemap1.png", combinedRemap1);
 
 /*  5. See the results  */
-    //imshow("Disparity", disparity2);
-    ShowManyImages("Remapped", 2, combinedRemap1, combinedRemap2);
+    imshow("Remapped", combinedRemap1);
+    //ShowManyImages("Remapped", 2, combinedRemap1, combinedRemap2);
     waitKey(0);        
 }

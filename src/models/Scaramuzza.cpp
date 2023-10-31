@@ -7,7 +7,7 @@ ScaramuzzaModel::ScaramuzzaModel()
 
 cv::Point2d ScaramuzzaModel::projectWorldToPixel(cv::Mat worldPoint)
 {
-    // unpacl the coords
+    // unpack the coords
     double X = worldPoint.at<float>(0);
     double Y = worldPoint.at<float>(1);
     double Z = worldPoint.at<float>(2);

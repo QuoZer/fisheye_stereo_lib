@@ -74,6 +74,10 @@ void SurroundSystem::readCamera(cv::FileNode& node)
 		node["extrinsics"]["rotation"] >> rot;
 		node["intrinsics"]["skew"] >> skew;
 		node["intrinsics"]["principal_point"] >> principal_point;
+		// swap (std::swap)
+		principal_point[0] = principal_point[0] + principal_point[1];
+		principal_point[1] = principal_point[0] - principal_point[1];
+		principal_point[0] = principal_point[0] - principal_point[1];
 		node["intrinsics"]["coefficients"] >> coefficients;
 		newKBCamera.setIntrinsics(coefficients, principal_point, skew);
 		newKBCamera.setExtrinsics(pos, rot);

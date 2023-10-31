@@ -59,7 +59,6 @@ void FisheyeDewarper::setSize(cv::Size oldsize, cv::Size newsize, float wideFov)
 {
     this->oldSize = oldsize;
     this->newSize = newsize;
-    //std::cout << "Pinhole parameters set" << pinhole.errorsum << std::endl;
     pinhole->setIntrinsics( newSize, wideFov);
     //createMaps();
 }
@@ -136,10 +135,7 @@ void FisheyeDewarper::fillMaps()
             map1.at<float>(i, j) = distPoint.y;
             map2.at<float>(i, j) = distPoint.x;
         }
-        //if (i % 100 == 0) std::cout << "Collumn N" << i << std::endl;
     }
-    //std::cout << "Avg. error: " << cameraModel->errorsum / (newSize.area()) << std::endl;
-
 }
 
 std::vector<cv::Mat> FisheyeDewarper::getMaps()
