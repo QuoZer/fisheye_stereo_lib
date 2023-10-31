@@ -88,7 +88,6 @@ void Stereopair::loadMaps(int index, const char* systemId)
 void Stereopair::loadStereoSGBMParameters(const std::string& filename, cv::Ptr<cv::StereoSGBM>& matcher) 
 {
     cv::FileStorage fs(filename, cv::FileStorage::READ);
-
     if (!fs.isOpened()) {
         std::cerr << "Error: Could not open the parameter file " << filename << std::endl;
         return;

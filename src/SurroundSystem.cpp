@@ -25,18 +25,19 @@ int SurroundSystem::createStereopair(int lCamIndex, int rCamIndex, cv::Size reco
 	std::shared_ptr <FisheyeDewarper> rightDewarper(new FisheyeDewarper(right));
 	dewarpers.push_back(rightDewarper);
 	// TODO: interpolation setter ?? 
-	leftDewarper->setSize(left->oldSize, reconstructedRes, 90);  // HACK: pinhole 90deg fow is an assumption
+	leftDewarper->setSize(left->oldSize, reconstructedRes, 90);  // HACK: pinhole 90deg fov is an assumption
 	rightDewarper->setSize(right->oldSize, reconstructedRes, 90);
 	// create a stereopair based on the newly created dewarpers
 	std::shared_ptr<Stereopair> SP( new Stereopair(left, leftDewarper, right, rightDewarper, reconstructedRes) );
 	SP->setOptimalDirecton();
+	
 	SP->setStereoMethod(sm, stereoParamsPath);
 	stereopairs.push_back(SP);
 	// return index
 	return stereopairs.size() - 1;
 }
 
-void SurroundSystem::readCamera(cv::FileNode& node) 
+void SurroundSystem::readCamera(const cv::FileNode& node) 
 {
 	std::string camera_model = node["model"];
 	if (camera_model == "Scaramuzza")
@@ -86,7 +87,7 @@ void SurroundSystem::readCamera(cv::FileNode& node)
 	// TODO: add other camera models
 }
 
-void SurroundSystem::readStereopair(cv::FileNode& node)
+void SurroundSystem::readStereopair(const cv::FileNode& node)
 {
 	cv::FileNode sp = node;
 	cv::Size out_size(sp["out_resolution"]["width"], sp["out_resolution"]["height"]);
@@ -111,7 +112,6 @@ void SurroundSystem::readSystemParams(const std::string& filepath)
 		return ;
 	}
 	
-
 	cv::FileNode cameras_node = fs["system"]["cameras"];
 	for (cv::FileNodeIterator it = cameras_node.begin(); it != cameras_node.end(); ++it) 
 	{
