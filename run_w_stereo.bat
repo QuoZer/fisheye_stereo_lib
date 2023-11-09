@@ -1,1 +1,0 @@
-.\build\Release\dewarper.exe -w=9 -h=6 -pt=chessboard ..\data\stereo_img\two_dome_images\stereo_list.xml
