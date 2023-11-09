@@ -20,7 +20,7 @@ file( GLOB LIB_SOURCES src/*.cpp
 file( GLOB LIB_HEADERS include/*.h )
 add_library( fisheye_svs ${LIB_SOURCES} ${LIB_HEADERS} )
 
-file( GLOB APP_SOURCES example/test.cpp )
+file( GLOB APP_SOURCES example/batch_dewarper.cpp )
 foreach( testsourcefile ${APP_SOURCES} )
     # I used a simple string replace, to cut off .cpp.
     #string( REPLACE ".cpp" "" testname ${testsourcefile} )
