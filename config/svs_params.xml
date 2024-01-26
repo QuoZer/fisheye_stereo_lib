@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<system>
+
+<cameras>
+  <camera>
+    <model>Scaramuzza</model>
+    <intrinsics>
+      <coefficients>
+        345.1319 -0.0011 5.7623e-07 -1.3985e-09
+      </coefficients>
+      <lambda>0.022</lambda>
+      <principal_point> 540 540 </principal_point>
+      <skew type_id="opencv-matrix">
+		  <rows>2</rows>
+		  <cols>2</cols>
+		  <dt>d</dt>
+		  <data> 1. 0. 0. 1.</data>
+	  </skew>
+      <resolution>
+        <width>1080</width>
+        <height>1080</height>
+      </resolution>
+    </intrinsics>
+    <extrinsics>
+      <translation>
+        0 0 0
+      </translation>
+      <rotation>
+        0  0 0.3826834 0.9238795
+      </rotation>
+    </extrinsics>
+  </camera>
+  
+  <camera>
+    <model>Scaramuzza</model>
+    <intrinsics>
+      <coefficients>
+        345.1319 -0.0011 5.7623e-07 -1.3985e-09
+      </coefficients>
+      <lambda>0.022</lambda>
+      <principal_point>
+        540 540
+      </principal_point>
+      <skew type_id="opencv-matrix">
+		  <rows>2</rows>
+		  <cols>2</cols>
+		  <dt>d</dt>
+		  <data> 1. 0. 0. 1.</data>
+	  </skew>
+      <resolution>
+        <width>1080</width>
+        <height>1080</height>
+      </resolution>
+    </intrinsics>
+    <extrinsics>
+      <translation>
+        1 0 0
+      </translation>
+      <rotation>
+        0 0 -0.3826834 0.9238795
+      </rotation>
+    </extrinsics>
+  </camera>
+
+  <camera>
+    <model>KB</model>
+    <intrinsics>
+      <coefficients>
+        0.000757676 -0.000325907 0.0000403 -0.000001866
+      </coefficients>
+      <principal_point>
+        540 540
+      </principal_point>
+      <skew type_id="opencv-matrix">
+		  <rows>2</rows>
+		  <cols>2</cols>
+		  <dt>d</dt>
+		  <data> 343.536 0. 0. 343.471</data>
+	  </skew>
+      <resolution>
+        <width>1080</width>
+        <height>1080</height>
+      </resolution>
+    </intrinsics>
+	
+    <extrinsics>
+      <translation>
+        0 0 0
+      </translation>
+      <rotation>
+        0 0 0.3826834 0.9238795
+      </rotation>
+    </extrinsics>
+  </camera>
+
+  <camera>
+    <model>KB</model>
+    <intrinsics>
+      <coefficients>
+        0.000757676 -0.000325907 0.0000403 -0.000001866
+      </coefficients>
+      <principal_point>
+        540 540
+      </principal_point>
+      <skew type_id="opencv-matrix">
+		  <rows>2</rows>
+		  <cols>2</cols>
+		  <dt>d</dt>
+		  <data> 343.536 0. 0. 343.471 </data>
+	  </skew>
+      <resolution>
+        <width>1080</width>
+        <height>1080</height>
+      </resolution>
+    </intrinsics>
+	
+    <extrinsics>
+      <translation>
+        0 0 0
+      </translation>
+      <rotation>
+        0 0 -0.3826834 0.9238795
+      </rotation>
+    </extrinsics>
+  </camera>
+ </cameras>
+
+<stereopairs>
+  <stereopair id="0">
+    <camera1>0</camera1>
+    <camera2>1</camera2>
+    <out_resolution>
+      <width>540</width>
+      <height>540</height>
+    </out_resolution>
+    <method>SGBM</method>
+    <parameters_file>C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/out/build/x64-Debug/stereo_sgbm_parameters.yaml</parameters_file>
+    <orientation>
+      0 0 0
+    </orientation>
+  </stereopair>
+
+  <stereopair id="1">
+    <camera1>2</camera1>
+    <camera2>3</camera2>
+    <out_resolution>
+      <width>540</width>
+      <height>540</height>
+    </out_resolution>
+    <method>SGBM</method>
+    <parameters_file>C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/out/build/x64-Debug/stereo_sgbm_parameters.yaml</parameters_file>
+    <orientation>
+      0 0 0
+    </orientation>
+  </stereopair>
+  </stereopairs>
+	
+</system>
+</opencv_storage>
