@@ -1,7 +1,7 @@
 set(OpenCV_DIR "C:/Users/Matvey/Soft/OpenCV/opencv/build")
 set(CMAKE_BUILD_FILES_DIRECTORY "./build")
 
-set (CMAKE_CXX_STANDARD 14)
+set (CMAKE_CXX_STANDARD 17)
 cmake_minimum_required(VERSION 3.2)
 
 project( fisheye_stereo )
