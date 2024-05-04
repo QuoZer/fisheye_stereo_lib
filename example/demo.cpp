@@ -44,7 +44,7 @@ int main(int argc, char** argv)
 /*  3.1 OR load already filled ones (WIP) */
     //SS.loadLUTs("svs");
 	
-/*  4. Get images  */
+/*  4. Prepare images  */
     Mat combinedRemap1(Size(newSize.width*2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
     Mat disparity1(newSize, CV_32F, Scalar(0, 0, 0));
     

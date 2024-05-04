@@ -58,8 +58,12 @@ int main(int argc, char** argv)
     string param_path = "C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/config/elte_params_120deg.xml";
 
     // indices of the measurement images to be dewarped
-    std::vector<int> indicies = {4, 6, 11, 16, 21, 26, 31, 36, 41, 45}; // 120 deg
-    // 
+    //std::vector<int> indicies = { 1, 6, 11, 16, 21, 27, 31, 36, 41, 45 }; // 0 deg
+    //std::vector<int> indicies = { 1, 7, 12, 17, 22, 27, 32, 37, 41, 45}; // 30 deg
+    //std::vector<int> indicies = { 1, 6, 11, 16, 21, 27, 31, 36, 41, 45 }; // 60 deg
+    //std::vector<int> indicies = {1, 6, 11, 16, 21, 27, 31, 36, 41, 45}; // 90 deg
+    std::vector<int> indicies = {4, 6, 11, 16, 21, 26, 31, 36, 41}; // 120 deg
+    // count the number of calibration image pairs
     int num_distances = getNumFiles(base_path + "calibration") / 2;
 
     bool swap_lr = true;
@@ -90,9 +94,9 @@ int main(int argc, char** argv)
 
         // read pointcloud 
         scan_path = base_path + "scans/test_fn" + to_string(index) + ".ply";
-        new_scan_path = base_path + "scans/left_d" + to_string(new_index) + "_dewarped.ply";
+        new_scan_path = base_path + "scans/left_d" + to_string(new_index) + ".ply";
         // resave under different name
-        resavePLY(scan_path, new_scan_path);
+        //resavePLY(scan_path, new_scan_path);
         
         // remove distortion
         Mat combinedRemap1(Size(newSize.width*2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
@@ -104,7 +108,7 @@ int main(int argc, char** argv)
         cout << new_index <<  " Index done" << endl;
         new_index++;
     }
-
+    cout << "Measurements done, prcoessing calibration images..." << endl;
     // loop over all calibration images
     for (int i = 1; i <= num_distances; i++)
     {
@@ -132,5 +136,8 @@ int main(int argc, char** argv)
 
         cout << i << " Index done" << endl;
 	}
+    cout << "All done" << endl;
+
+	return 0;
 
 }
