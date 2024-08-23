@@ -1,7 +1,7 @@
 set(OpenCV_DIR "C:/Users/Matvey/Soft/OpenCV/opencv/build")
 set(CMAKE_BUILD_FILES_DIRECTORY "./build")
 
-set (CMAKE_CXX_STANDARD 14)
+set (CMAKE_CXX_STANDARD 17)
 cmake_minimum_required(VERSION 3.2)
 
 project( fisheye_stereo )
@@ -20,7 +20,7 @@ file( GLOB LIB_SOURCES src/*.cpp
 file( GLOB LIB_HEADERS include/*.h )
 add_library( fisheye_svs ${LIB_SOURCES} ${LIB_HEADERS} )
 
-file( GLOB APP_SOURCES example/test.cpp )
+file( GLOB APP_SOURCES example/batch_dewarper.cpp )
 foreach( testsourcefile ${APP_SOURCES} )
     # I used a simple string replace, to cut off .cpp.
     #string( REPLACE ".cpp" "" testname ${testsourcefile} )

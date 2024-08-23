@@ -39,16 +39,15 @@ int main(int argc, char** argv)
     SS.readSystemParams("/home/roser/repos/fisheye_stereo/fy_lib_source/elte_params.xml");
 
 /*  3. Compute look-up tables  */
-    SS.prepareLUTs(true);
+    SS.prepareLUTs(false);
 
 /*  3.1 OR load already filled ones (WIP) */
     //SS.loadLUTs("svs");
 	
-/*  4. Get images  */
-    Mat combinedRemap1(Size(newSize.width * 2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
-    Mat combinedRemap2(Size(newSize.width * 2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
+/*  4. Prepare images  */
+    Mat combinedRemap1(Size(newSize.width*2, newSize.height), CV_8UC3, Scalar(0, 0, 0));
     Mat disparity1(newSize, CV_32F, Scalar(0, 0, 0));
-    Mat disparity2(newSize, CV_32F, Scalar(0, 0, 0));
+    
     SS.getImage(0, SurroundSystem::DISPARITY, left, right, disparity1);
     // SS.getImage(1, SurroundSystem::DISPARITY, left, right, disparity2);
     SS.getImage(0, SurroundSystem::RECTIFIED, left, right, combinedRemap1);
@@ -62,4 +61,10 @@ int main(int argc, char** argv)
     // ShowManyImages("Remapped", 2, combinedRemap1, combinedRemap2);
     imshow("Remapped", combinedRemap1);
     waitKey(0);        
+
+    /*  6. Save the results  */
+    imwrite("./left_fn4.png", combinedRemap1(Rect(0, 0, newSize.width, newSize.height)));
+    imwrite("./right_fn4.png", combinedRemap1(Rect(newSize.width, 0, newSize.width, newSize.height)));
+
+
 }

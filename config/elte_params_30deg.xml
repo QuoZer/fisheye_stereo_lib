@@ -9,8 +9,8 @@
 		  7.1705286702066539e-03 -7.7609492309336776e-04 4.9885785895125193e-04 -5.6825170383296975e-04
 	  </coefficients>
       <principal_point>
-        618 960
-      </principal_point>
+		  892 618
+	  </principal_point>
     <skew type_id="opencv-matrix">
 		  <rows>2</rows>
 		  <cols>2</cols>
@@ -28,7 +28,7 @@
         0 0 0
       </translation>
       <rotation>
-        0 0 0.3826834 0.9238795
+        0 0 0.1305262 0.9914449
       </rotation>
     </extrinsics>  
   </camera>
@@ -40,7 +40,7 @@
    7.0345345382964554e-03 1.0505115994321341e-04 -5.6893359441318619e-04 -1.7574303121631975e-04
         </coefficients>
       <principal_point>
-        621 975
+        975 621 
       </principal_point>
       <skew type_id="opencv-matrix">
 		  <rows>2</rows>
@@ -59,7 +59,7 @@
         0 0 0
       </translation>
       <rotation>
-        0 0 -0.3826834 0.9238795
+        0 0 -0.1305262 0.9914449
       </rotation>
     </extrinsics>
   </camera>
@@ -75,8 +75,8 @@
       <height>540</height>
     </out_resolution>
     <method>SGBM</method>
-    <!-- C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/out/build/x64-Debug/stereo_sgbm_parameters.yaml -->
-    <parameters_file>/home/roser/repos/fisheye_stereo/fy_lib_source/stereo_sgbm_parameters.yaml</parameters_file>
+    <parameters_file>C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/out/build/x64-Debug/stereo_sgbm_parameters.yaml</parameters_file>
+    <!-- <parameters_file>/home/roser/repos/fisheye_stereo/fy_lib_source/stereo_sgbm_parameters.yaml</parameters_file> -->
     <orientation>
       0 0 0
     </orientation>

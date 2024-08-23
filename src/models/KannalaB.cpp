@@ -37,9 +37,7 @@ cv::Point2d KBModel::projectWorldToPixel(cv::Mat worldPoint)
         kb_polynom[2] * pow(theta, 7) + kb_polynom[3] * pow(theta, 9);
 
     cv::Vec2d imgPixel = poly * cv::Point2d(cos(phi), -sin(phi));
-    cv::Point fypixel(stretchMatrix * imgPixel + centerOffset);        // technically could do toCorner's job, but I'll keep it simple for now
-    //toCorner(fypixel, oldSize);
-    //std::cout << fypixel << std::endl;
+    cv::Point fypixel(stretchMatrix * imgPixel + centerOffset);     
 
     return fypixel;
 }

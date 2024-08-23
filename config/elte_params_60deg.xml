@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<system>
+<cameras>
+	<camera>
+    <model>KB</model>
+    <intrinsics>
+      <coefficients>
+		  7.1705286702066539e-03 -7.7609492309336776e-04 4.9885785895125193e-04 -5.6825170383296975e-04
+	  </coefficients>
+      <principal_point>
+		  892 618
+	  </principal_point>
+    <skew type_id="opencv-matrix">
+		  <rows>2</rows>
+		  <cols>2</cols>
+		  <dt>d</dt>
+		  <data> 557.104 0. 0. 556.873</data>
+	  </skew>
+      <resolution>
+        <width>1920</width>
+        <height>1200</height>
+      </resolution>
+    </intrinsics>
+	
+    <extrinsics>
+      <translation>
+        0 0 0
+      </translation>
+      <rotation>
+        0 0 0.258819 0.9659258
+      </rotation>
+    </extrinsics>  
+  </camera>
+
+	<camera>
+    <model>KB</model>
+    <intrinsics>
+      <coefficients>
+   7.0345345382964554e-03 1.0505115994321341e-04 -5.6893359441318619e-04 -1.7574303121631975e-04
+        </coefficients>
+      <principal_point>
+        975 621 
+      </principal_point>
+      <skew type_id="opencv-matrix">
+		  <rows>2</rows>
+		  <cols>2</cols>
+		  <dt>d</dt>
+		  <data> 557.666 0. 0. 557.596 </data>
+	  </skew>
+      <resolution>
+        <width>1920</width>
+        <height>1200</height>
+      </resolution>
+    </intrinsics>
+	
+    <extrinsics>
+      <translation>
+        0 0 0
+      </translation>
+      <rotation>
+        0 0 -0.258819 0.9659258
+      </rotation>
+    </extrinsics>
+  </camera>
+ </cameras>
+
+<stereopairs>
+
+  <stereopair id="0">
+    <camera1>0</camera1>
+    <camera2>1</camera2>
+    <out_resolution>
+      <width>540</width>
+      <height>540</height>
+    </out_resolution>
+    <method>SGBM</method>
+    <parameters_file>C:/Users/Matvey/Repos/fisheye_stereo/fy_lib_source/out/build/x64-Debug/stereo_sgbm_parameters.yaml</parameters_file>
+    <!-- <parameters_file>/home/roser/repos/fisheye_stereo/fy_lib_source/stereo_sgbm_parameters.yaml</parameters_file> -->
+    <orientation>
+      0 0 0
+    </orientation>
+  </stereopair>
+</stereopairs>
+	
+</system>
+</opencv_storage>

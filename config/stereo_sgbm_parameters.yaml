@@ -1,4 +1,5 @@
-%YAML 1.2
+%YAML:1.0
+---
 minDisparity: 0
 numDisparities: 8
 preFilterCap: 8
