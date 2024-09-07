@@ -18,7 +18,7 @@ class Stereopair
 	/// <summary>
 	/// Configured stereo matcher (SGBM/ SGM)
 	/// </summary>
-	std::shared_ptr<cv::StereoMatcher> matcher;
+	cv::Ptr<cv::StereoMatcher> matcher;
 	
 	/// <summary>
 	/// Dewarpers for left and right cameras
