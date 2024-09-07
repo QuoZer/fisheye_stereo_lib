@@ -52,7 +52,7 @@ void SurroundSystem::readCamera(const cv::FileNode& node)
 		cv::Size original(node["intrinsics"]["resolution"]["height"], node["intrinsics"]["resolution"]["width"]);
 		node["extrinsics"]["translation"] >> pos;
 		node["extrinsics"]["rotation"] >> rot;
-		node["intrinsics"]["skew"] >> skew;
+		// node["intrinsics"]["skew"] >> skew;
 		node["intrinsics"]["principal_point"] >> principal_point;
 		node["intrinsics"]["coefficients"] >> coefficients;
 		newScaraCamera.setIntrinsics(coefficients, node["intrinsics"]["lambda"], principal_point, skew);
@@ -73,7 +73,7 @@ void SurroundSystem::readCamera(const cv::FileNode& node)
 		cv::Size original(node["intrinsics"]["resolution"]["height"], node["intrinsics"]["resolution"]["width"]);
 		node["extrinsics"]["translation"] >> pos;
 		node["extrinsics"]["rotation"] >> rot;
-		node["intrinsics"]["skew"] >> skew;
+		// node["intrinsics"]["skew"] >> skew;
 		node["intrinsics"]["principal_point"] >> principal_point;
 		// swap (std::swap)
 		principal_point[0] = principal_point[0] + principal_point[1];

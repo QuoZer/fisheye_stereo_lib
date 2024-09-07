@@ -118,7 +118,7 @@ void Stereopair::setStereoMethod(StereoMethod sm, std::string params_path)
 	else
 		throw std::runtime_error("No matcher assigned");
 
-    //matcher = cv::StereoSGBM::create();
+
     cv::Ptr<cv::StereoSGBM> sgbm;
     loadStereoSGBMParameters(params_path, sgbm);
     matcher = sgbm;
