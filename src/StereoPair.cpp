@@ -67,7 +67,7 @@ void Stereopair::saveMaps(int index, std::string& systemId)
 
     std::string name = systemId + std::to_string(index) + "_" + leftCamera->modelName + rightCamera->modelName + ".png";
 
-    cv::imwrite(name, full_map);        // TODO: casts the image to 8 bit, breaks the maps
+    cv::imwrite(name, full_map);        // FIXME: casts the image to 8 bit, which breaks the maps
 
 }
 
@@ -115,14 +115,14 @@ void Stereopair::setStereoMethod(StereoMethod sm, std::string params_path)
 		matcher = cv::StereoSGBM::create();
 	else if (sm == BM)
 		matcher = cv::StereoBM::create();
-	else
-		throw std::runtime_error("No matcher assigned");
+    else if (sm == NONE)
+        return;
+	else throw std::runtime_error("No matcher assigned");
 
 
-    cv::Ptr<cv::StereoSGBM> sgbm;
-    loadStereoSGBMParameters(params_path, sgbm);
-    matcher = sgbm;
-
+    cv::Ptr<cv::StereoSGBM> matcher_p;
+    loadStereoSGBMParameters(params_path, matcher_p);
+    matcher = matcher_p;
 }
 
 // return a number's sign
@@ -171,7 +171,8 @@ int Stereopair::getRemapped(cv::Mat& left, cv::Mat& right, cv::Mat& leftRemapped
 
 int Stereopair::getDisparity(cv::OutputArray& dist, cv::InputArray& leftImage, cv::InputArray& rightImage)
 {
-    // static ?? 
+    if (this->matcher == nullptr)
+        throw std::runtime_error("No stereo matcher set");
     cv::Mat leftImageRemapped(this->outputSize, CV_8UC3, cv::Scalar(0, 0, 0));
     cv::Mat rightImageRemapped(this->outputSize, CV_8UC3, cv::Scalar(0, 0, 0));
     

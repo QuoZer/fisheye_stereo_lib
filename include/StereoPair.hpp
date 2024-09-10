@@ -7,7 +7,8 @@
 enum StereoMethod
 {
 	BM,
-	SGBM
+	SGBM,
+	NONE
 };
 
 /// <summary>
